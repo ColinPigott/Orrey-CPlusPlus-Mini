@@ -642,10 +642,10 @@ BOOST_AUTO_TEST_CASE( TestJunit002_000_000_0000 )
   if ( abs((objects[OBJECT_ID_SUN].equ_dec - expected_output[5])) <= SUN_EQU_DEC_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_SUN].hor_altitude - expected_output[6])) <= SUN_HOR_AZIMUTH_TOL )
+  if ( abs((objects[OBJECT_ID_SUN].hor_altitude - expected_output[6])) <= SUN_HOR_ALTITUDE_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_SUN].hor_azimuth - expected_output[7])) <= SUN_HOR_ALTITUDE_TOL )
+  if ( abs((objects[OBJECT_ID_SUN].hor_azimuth - expected_output[7])) <= SUN_HOR_AZIMUTH_TOL )
     results_check++;	
 
   if ( abs((objects[OBJECT_ID_SUN].earth_object_distance - expected_output[8])) <= SUN_EARTH_DIST_TOL )
@@ -767,59 +767,116 @@ BOOST_AUTO_TEST_CASE( TestJunit002_001_000_0000 )
   if ( abs((objects[OBJECT_ID_MOON].actual_geo_ecliptic_lambda - expected_output[0])) <= MOON_GEO_ECL_LAMBDA_TOL )
     results_check++;
 
+  // Debug +++++
+  cout << " 1 Results = " << results_check << endl;
+    						
   if ( abs((objects[OBJECT_ID_MOON].actual_geo_ecliptic_beta - expected_output[1])) <= MOON_GEO_ECL_BETA_TOL )
     results_check++;
+
+  // Debug +++++
+  cout << " 2 Results = " << results_check << endl;
 	
   if ( abs((objects[OBJECT_ID_MOON].actual_helio_ecliptic_lambda - expected_output[2])) <= MOON_HELIO_ECL_LAMBDA_TOL )
     results_check++;	
 
+  // Debug +++++
+  cout << " 3 Results = " << results_check << endl;
+
   if ( abs((objects[OBJECT_ID_MOON].actual_helio_ecliptic_beta - expected_output[3])) <= MOON_HELIO_ECL_BETA_TOL )
     results_check++;			
+		
+  // Debug +++++
+  cout << " 4 Results = " << results_check << endl;
 
   if ( abs((objects[OBJECT_ID_MOON].equ_ra - expected_output[4])) <= MOON_EQU_RA_TOL )
     results_check++;	
 		
+  // Debug +++++
+  cout << " 5 Results = " << results_check << endl;
+
   if ( abs((objects[OBJECT_ID_MOON].equ_dec - expected_output[5])) <= MOON_EQU_DEC_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_MOON].hor_altitude - expected_output[6])) <= MOON_HOR_AZIMUTH_TOL )
+  // Debug +++++
+  cout << " 6 Results = " << results_check << endl;
+
+  if ( abs((objects[OBJECT_ID_MOON].hor_altitude - expected_output[6])) <= MOON_HOR_ALTITUDE_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_MOON].hor_azimuth - expected_output[7])) <= MOON_HOR_ALTITUDE_TOL )
+  // Debug +++++
+  cout << " 7 Results = " << results_check << endl;
+
+  if ( abs((objects[OBJECT_ID_MOON].hor_azimuth - expected_output[7])) <= MOON_HOR_AZIMUTH_TOL )
     results_check++;	
+
+  // Debug +++++
+  cout << " 8 Results = " << results_check << endl;
 
   if ( abs((objects[OBJECT_ID_MOON].earth_object_distance - expected_output[8])) <= MOON_EARTH_DIST_TOL )
     results_check++;	
 
+  // Debug +++++
+  cout << " 9 Results = " << results_check << endl;
+
   if ( abs((objects[OBJECT_ID_MOON].angular_size - expected_output[9])) <= MOON_ANGULAR_SIZE_TOL )
     results_check++;	
+
+  // Debug +++++
+  cout << "10 Results = " << results_check << endl;
 
   if ( abs((objects[OBJECT_ID_MOON].light_travel_time - expected_output[10])) <= MOON_LIGHT_TRAVEL_TOL )
     results_check++;	
 
+  // Debug +++++
+  cout << "11 Results = " << results_check << endl;
+
   if ( abs((objects[OBJECT_ID_MOON].sun_object_distance - expected_output[11])) <= MOON_SUN_DIST_TOL )
     results_check++;	
+
+  // Debug +++++
+  cout << "12 Results = " << results_check << endl;
 
   if ( abs((objects[OBJECT_ID_MOON].phase - expected_output[12])) <= MOON_PHASE_TOL )
     results_check++;   
 
+  // Debug +++++
+  cout << "13 Results = " << results_check << endl;
+
   if ( abs((objects[OBJECT_ID_MOON].magnitude - expected_output[13])) <= MOON_MAG_TOL )
     results_check++;     
+
+  // Debug +++++
+  cout << "14 Results = " << results_check << endl;
 
   if ( abs((objects[OBJECT_ID_MOON].azimuth_rise - expected_output[14])) <= MOON_AZIMUTH_RISE_TOL )
     results_check++;     
 
+  // Debug +++++
+  cout << "15 Results = " << results_check << endl;
+
   if ( abs((objects[OBJECT_ID_MOON].azimuth_set - expected_output[15])) <= MOON_AZIMUTH_SET_TOL )
     results_check++;    
+
+  // Debug +++++
+  cout << "16 Results = " << results_check << endl;
 
   if ( abs((objects[OBJECT_ID_MOON].rise_time - expected_output[16])) <= MOON_RISE_TIME_TOL )
     results_check++;     
 
+  // Debug +++++
+  cout << "17 Results = " << results_check << endl;
+
   if ( abs((objects[OBJECT_ID_MOON].transit_time - expected_output[17])) <= MOON_TRANSIT_TIME_TOL )
     results_check++;     
 
+  // Debug +++++
+  cout << "18 Results = " << results_check << endl;
+
   if ( abs((objects[OBJECT_ID_MOON].set_time - expected_output[18])) <= MOON_SET_TIME_TOL )
     results_check++;     
+
+  // Debug +++++
+  cout << "19 Results = " << results_check << endl;
 
   // These lines are used for diagnostic reasons.
   cout << setprecision(DISPLAY_PRECISION);
@@ -1667,12 +1724,21 @@ BOOST_AUTO_TEST_CASE( TestJunit002_007_000_0000 )
   if ( abs((objects[OBJECT_ID_SATURN].rise_time - expected_output[16])) <= SATURN_RISE_TIME_TOL )
     results_check++;     
     		  
+  // Debug +++++
+  cout << "17 Results = " << results_check << endl;
+
   if ( abs((objects[OBJECT_ID_SATURN].transit_time - expected_output[17])) <= SATURN_TRANSIT_TIME_TOL )
     results_check++;     
+
+  // Debug +++++
+  cout << "18 Results = " << results_check << endl;
 
   if ( abs((objects[OBJECT_ID_SATURN].set_time - expected_output[18])) <= SATURN_SET_TIME_TOL )
     results_check++;     
     			
+  // Debug +++++
+  cout << "19 Results = " << results_check << endl;
+
   // These lines are used for diagnostic reasons.
   cout << setprecision(DISPLAY_PRECISION);
   cout << "TestJunit002_007_000_0000" << endl;  
