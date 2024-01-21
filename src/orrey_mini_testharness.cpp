@@ -40,10 +40,10 @@ BOOST_AUTO_TEST_CASE( TestJunit000_000_000_0000 )
   output = api.ecl_to_equ(&ecl[0], 1980, 1, 1, 0, 0, 0.0, 0.0);
 						
   // Check that the answer is within the tolerance.
-  if ( abs((output[0] - expected_output[0])) <= EQU_RA_TOL )
+  if ( fabs((output[0] - expected_output[0])) <= EQU_RA_TOL )
     results_check++;
 							
-  if ( abs((output[1] - expected_output[1])) <= EQU_DEC_TOL )
+  if ( fabs((output[1] - expected_output[1])) <= EQU_DEC_TOL )
     results_check++;
 				
   // These lines are used for diagnostic reasons.
@@ -77,10 +77,10 @@ BOOST_AUTO_TEST_CASE( TestJunit000_000_000_0001 )
   output = api.ecl_to_equ(&ecl[0], 2444238.50000);
 						
   // Check that the answer is within the tolerance.
-  if ( abs((output[0] - expected_output[0])) <= EQU_RA_TOL )
+  if ( fabs((output[0] - expected_output[0])) <= EQU_RA_TOL )
     results_check++;
 							
-  if ( abs((output[1] - expected_output[1])) <= EQU_DEC_TOL )
+  if ( fabs((output[1] - expected_output[1])) <= EQU_DEC_TOL )
     results_check++;
 				
   // These lines are used for diagnostic reasons.
@@ -117,10 +117,10 @@ BOOST_AUTO_TEST_CASE( TestJunit000_001_000_0000 )
   output = api.ecl_to_hor(&ecl[0], 2447487.5, 0.0, 51.5);
 
   // Check that the answer is within the tolerance.
-  if ( abs((output[0] - expected_output[0])) <= HOR_AZIMUTH_TOL )
+  if ( fabs((output[0] - expected_output[0])) <= HOR_AZIMUTH_TOL )
     results_check++;
 							
-  if ( abs((output[1] - expected_output[1])) <= HOR_ALTITUDE_TOL )
+  if ( fabs((output[1] - expected_output[1])) <= HOR_ALTITUDE_TOL )
     results_check++;
 				
   // These lines are used for diagnostic reasons.
@@ -154,10 +154,10 @@ BOOST_AUTO_TEST_CASE( TestJunit000_001_000_0001 )
   output = api.ecl_to_hor(&ecl[0], 1988, 11, 22, 0, 0, 0.0, 0.0, 0.0, 51.5);
 						
   // Check that the answer is within the tolerance.
-  if ( abs((output[0] - expected_output[0])) <= HOR_AZIMUTH_TOL )
+  if ( fabs((output[0] - expected_output[0])) <= HOR_AZIMUTH_TOL )
     results_check++;
 							
-  if ( abs((output[1] - expected_output[1])) <= HOR_ALTITUDE_TOL )
+  if ( fabs((output[1] - expected_output[1])) <= HOR_ALTITUDE_TOL )
     results_check++;
 				
   // These lines are used for diagnostic reasons.
@@ -180,23 +180,37 @@ BOOST_AUTO_TEST_CASE( TestJunit000_003_000_0000 )
   double *output;
   int results_check = 0;
   
-  // Set the expected answers.
-  expected_output[0] = 61.0969; 
-  expected_output[1] = -0.8277;
-  expected_output[2] = 5.021236536482; 
+  // Data for 2024/01/01 00:00:00 UT
+  //	object		longitude     latitiude  	Distance(AU)
+  // ===========        =========     =========  	============
+  // Sun (Geo)		280.038992	0.000162	0.9833183
+  // Earth (Helio)	100.04627	-0.00016	0.9833183
+  //
+  // Jupiter (Helio)	 45.83832	-1.06566	4.9848972
+  // Jupiter (Geo)	 35.582395	-1.185480	4.4814715
+  //
+  // The source:
+  // https://eco.mtk.nao.ac.jp/koyomi/cande/index.html.en
   
-  // The position is for Jupiter on 22nd Nov 1988 at 00:00:00
-  // Convert the geo ecl co-ords for the object and the origin(Sun) and convert to the helio co-ords.
-  output = api.helio_ecl_to_geo_ecl(61.2007435, -1.0319226, 4.03398217780624, 239.9074184, 0.0001560, 0.98758155072300);
+  // Set the expected answers.
+  expected_output[0] = 35.582395; 
+  expected_output[1] = -1.185480;
+  expected_output[2] = 4.4814715; 
+  
+  // Test Helio co-ords to Geo
+  // Convert the helio ecl co-ords for the object and the origin of the new co-ord system(Sun) and convert to the helio co-ords.
+  //                                    helio co-ord Jupiter            Helio co-ord Earth 
+  //                                :---------------------------:  :----------------------------:
+  output = api.helio_ecl_to_geo_ecl(45.83832, -1.06566, 4.9848972, 100.04627, -0.00016, 0.9833183);
   					
   // Check that the answer is within the tolerance.
-  if ( abs((output[0] - expected_output[0])) <= GEO_HELIO_ECL_LAMBDA_TOL )
+  if ( fabs((output[0] - expected_output[0])) <= HELIO_GEO_ECL_LAMBDA_TOL )
     results_check++;
 							
-  if ( abs((output[1] - expected_output[1])) <= GEO_HELIO_ECL_BETA_TOL )
+  if ( fabs((output[1] - expected_output[1])) <= HELIO_GEO_ECL_BETA_TOL )
     results_check++;
 
-  if ( abs((output[2] - expected_output[2])) <= GEO_HELIO_ECL_DISTANCE_TOL )
+  if ( fabs((output[2] - expected_output[2])) <= HELIO_GEO_ECL_DISTANCE_TOL )
     results_check++;
 				
   // These lines are used for diagnostic reasons.
@@ -221,23 +235,37 @@ BOOST_AUTO_TEST_CASE( TestJunit000_003_000_0001 )
   double *output;
   int results_check = 0;
   
-  // Set the expected answers.
-  expected_output[0] = 61.2007435; 
-  expected_output[1] = -1.0319226;
-  expected_output[2] = 4.03398217780624; 
+  // Data for 2024/01/01 00:00:00 UT
+  //	object		longitude     latitiude  	Distance(AU)
+  // ===========        =========     =========  	============
+  // Sun (Geo)		280.038992	0.000162	0.9833183
+  // Earth (Helio)	100.04627	-0.00016	0.9833183
+  //
+  // Jupiter (Helio)	 45.83832	-1.06566	4.9848972
+  // Jupiter (Geo)	 35.582395	-1.185480	4.4814715
+  //
+  // The source:
+  // https://eco.mtk.nao.ac.jp/koyomi/cande/index.html.en
   
-  // The position is for Jupiter on 22nd Nov 1988 at 00:00:00
-  // Convert the helio ecl co-ords for the object and the origin(Earth) and convert to the geo co-ords.
-  output = api.helio_ecl_to_geo_ecl(61.0969, -0.8277, 5.021236536482, 59.9074184, -0.0001560, 0.98758155072300);
-  					
+  // Set the expected answers.
+  expected_output[0] = 45.83832; 
+  expected_output[1] = -1.06566;
+  expected_output[2] = 4.9848972; 
+  
+  // Test Geo co-ords to Helio
+  // Convert the geo ecl co-ords for the object and the origin of the new co-ord system(Sun) and convert to the helio co-ords.
+  //                                         geo co-ord Jupiter            geo co-ord Sun 
+  //                                :-----------------------------:  :-----------------------------:
+  output = api.helio_ecl_to_geo_ecl(35.582395, -1.185480, 4.4814715, 280.038992, 0.000162, 0.9833183);
+  
   // Check that the answer is within the tolerance.
-  if ( abs((output[0] - expected_output[0])) <= HELIO_GEO_ECL_LAMBDA_TOL )
+  if ( fabs((output[0] - expected_output[0])) <= GEO_HELIO_ECL_LAMBDA_TOL )
     results_check++;
-							
-  if ( abs((output[1] - expected_output[1])) <= HELIO_GEO_ECL_BETA_TOL )
+    							
+  if ( fabs((output[1] - expected_output[1])) <= GEO_HELIO_ECL_BETA_TOL )
     results_check++;
 
-  if ( abs((output[2] - expected_output[2])) <= HELIO_GEO_ECL_DISTANCE_TOL )
+  if ( fabs((output[2] - expected_output[2])) <= GEO_HELIO_ECL_DISTANCE_TOL )
     results_check++;
 				
   // These lines are used for diagnostic reasons.
@@ -268,10 +296,10 @@ BOOST_AUTO_TEST_CASE( TestJunit000_004_000_0000 )
   output = api.hor_to_equ(-58.2,  6.2, 51.5, 0.0, 2447487.50000);
 						
   // Check that the answer is within the tolerance.
-  if ( abs((output[0] - expected_output[0])) <= EQU_RA_TOL )
+  if ( fabs((output[0] - expected_output[0])) <= EQU_RA_TOL )
     results_check++;
 							
-  if ( abs((output[1] - expected_output[1])) <= EQU_DEC_TOL )
+  if ( fabs((output[1] - expected_output[1])) <= EQU_DEC_TOL )
     results_check++;
 				
   // These lines are used for diagnostic reasons.
@@ -306,10 +334,10 @@ BOOST_AUTO_TEST_CASE( TestJunit000_005_000_0000 )
   output = api.equ_to_hor(2444352.1089313 ,18.539167, 23.219444, 52, -64.0);
 						
   // Check that the answer is within the tolerance.
-  if ( abs((output[0] - expected_output[0])) <= HOR_AZIMUTH_TOL )
+  if ( fabs((output[0] - expected_output[0])) <= HOR_AZIMUTH_TOL )
     results_check++;
 							
-  if ( abs((output[1] - expected_output[1])) <= HOR_ALTITUDE_TOL )
+  if ( fabs((output[1] - expected_output[1])) <= HOR_ALTITUDE_TOL )
     results_check++;
 				
   // These lines are used for diagnostic reasons.
@@ -337,7 +365,7 @@ BOOST_AUTO_TEST_CASE( TestJunit001_000_000_0000 )
   output = api.julian_date(1992,12,16,0,0,0.0);		 
 						
   // Check that the answer is within the tolerance.
-  if ( abs((output - actual_value)) <= JULIAN_DATE_TOL )
+  if ( fabs((output - actual_value)) <= JULIAN_DATE_TOL )
     results_check++;
 				
   // These lines are used for diagnostic reasons.
@@ -369,22 +397,22 @@ BOOST_AUTO_TEST_CASE( TestJunit001_001_000_0000 )
   output = api.julian_to_date(2446113.75);		 
 						
   // Check that the answer is within the tolerance.
-  if ( abs((output[0] - actual_value[0])) <= JULIAN_DATE_TOL )
+  if ( fabs((output[0] - actual_value[0])) <= JULIAN_DATE_TOL )
     results_check++;
 
-  if ( abs((output[1] - actual_value[1])) <= JULIAN_DATE_TOL )
+  if ( fabs((output[1] - actual_value[1])) <= JULIAN_DATE_TOL )
     results_check++;
 
-  if ( abs((output[2] - actual_value[2])) <= JULIAN_DATE_TOL )
+  if ( fabs((output[2] - actual_value[2])) <= JULIAN_DATE_TOL )
     results_check++;
     
-  if ( abs((output[3] - actual_value[3])) <= JULIAN_DATE_TOL )
+  if ( fabs((output[3] - actual_value[3])) <= JULIAN_DATE_TOL )
     results_check++;
     
-  if ( abs((output[4] - actual_value[4])) <= JULIAN_DATE_TOL )
+  if ( fabs((output[4] - actual_value[4])) <= JULIAN_DATE_TOL )
     results_check++;
     
-  if ( abs((output[5] - actual_value[5])) <= JULIAN_DATE_TOL )
+  if ( fabs((output[5] - actual_value[5])) <= JULIAN_DATE_TOL )
     results_check++;
         				
   // These lines are used for diagnostic reasons.
@@ -421,7 +449,7 @@ BOOST_AUTO_TEST_CASE( TestJunit001_002_000_0000 )
   output = api.gst(1980, 4, 22, 14, 36, 50.69);
 
   // Check that the answer is within the tolerance.
-  if ( abs((output - actual_value)) <= GST_TOL )
+  if ( fabs((output - actual_value)) <= GST_TOL )
     results_check++;
 				
   // These lines are used for diagnostic reasons.
@@ -447,7 +475,7 @@ BOOST_AUTO_TEST_CASE( TestJunit001_002_000_0001 )
   output = api.gst(2444352.10892);
 
   // Check that the answer is within the tolerance.
-  if ( abs((output - actual_value)) <= GST_TOL )
+  if ( fabs((output - actual_value)) <= GST_TOL )
     results_check++;
 
   // These lines are used for diagnostic reasons.
@@ -473,7 +501,7 @@ BOOST_AUTO_TEST_CASE( TestJunit001_003_000_0000 )
   output = api.lst(1980, 4, 22, 14, 36, 51.67, 0.0, 64);		 
 						
   // Check that the answer is within the tolerance.
-  if ( abs((output - actual_value)) <= LST_TOL )
+  if ( fabs((output - actual_value)) <= LST_TOL )
     results_check++;
 				
   // These lines are used for diagnostic reasons.
@@ -499,7 +527,7 @@ BOOST_AUTO_TEST_CASE( TestJunit001_003_000_0001 )
   output = api.lst(2444352.10892, 64);
 
   // Check that the answer is within the tolerance.
-  if ( abs((output - actual_value)) <= LST_TOL )
+  if ( fabs((output - actual_value)) <= LST_TOL )
     results_check++;
 
   // These lines are used for diagnostic reasons.
@@ -525,7 +553,7 @@ BOOST_AUTO_TEST_CASE( TestJunit001_004_000_0000 )
   output = api.lst_to_gst(0.401453,64);		 
 						
   // Check that the answer is within the tolerance.
-  if ( abs((output - actual_value)) <= GST_TOL )
+  if ( fabs((output - actual_value)) <= GST_TOL )
     results_check++;
 				
   // These lines are used for diagnostic reasons.
@@ -551,7 +579,7 @@ BOOST_AUTO_TEST_CASE( TestJunit001_005_000_0000 )
   output = api.gst_to_ut(1980,4,22,4.668119);		 
 						
   // Check that the answer is within the tolerance.
-  if ( abs((output - actual_value)) <= UT_TOL )
+  if ( fabs((output - actual_value)) <= UT_TOL )
     results_check++;
 				
   // These lines are used for diagnostic reasons.
@@ -577,7 +605,7 @@ BOOST_AUTO_TEST_CASE( TestJunit001_005_000_0001 )
   output = api.gst_to_ut(2444351.50000,4.668119);
 
   // Check that the answer is within the tolerance.
-  if ( abs((output - actual_value)) <= UT_TOL )
+  if ( fabs((output - actual_value)) <= UT_TOL )
     results_check++;
 
   // These lines are used for diagnostic reasons.
@@ -624,61 +652,61 @@ BOOST_AUTO_TEST_CASE( TestJunit002_000_000_0000 )
   objects = api.object_details(2447487.50000,0.0,51.5);	
 						
   // Check that the answer is within the tolerance.
-  if ( abs((objects[OBJECT_ID_SUN].actual_geo_ecliptic_lambda - expected_output[0])) <= SUN_GEO_ECL_LAMBDA_TOL )
+  if ( fabs((objects[OBJECT_ID_SUN].actual_geo_ecliptic_lambda - expected_output[0])) <= SUN_GEO_ECL_LAMBDA_TOL )
     results_check++;
     							
-  if ( abs((objects[OBJECT_ID_SUN].actual_geo_ecliptic_beta - expected_output[1])) <= SUN_GEO_ECL_BETA_TOL )
+  if ( fabs((objects[OBJECT_ID_SUN].actual_geo_ecliptic_beta - expected_output[1])) <= SUN_GEO_ECL_BETA_TOL )
     results_check++;
 
-  if ( abs((objects[OBJECT_ID_SUN].actual_helio_ecliptic_lambda - expected_output[2])) <= SUN_HELIO_ECL_LAMBDA_TOL )
+  if ( fabs((objects[OBJECT_ID_SUN].actual_helio_ecliptic_lambda - expected_output[2])) <= SUN_HELIO_ECL_LAMBDA_TOL )
     results_check++;			
 
-  if ( abs((objects[OBJECT_ID_SUN].actual_helio_ecliptic_beta - expected_output[3])) <= SUN_HELIO_ECL_BETA_TOL )
+  if ( fabs((objects[OBJECT_ID_SUN].actual_helio_ecliptic_beta - expected_output[3])) <= SUN_HELIO_ECL_BETA_TOL )
     results_check++;			
 
-  if ( abs((objects[OBJECT_ID_SUN].equ_ra - expected_output[4])) <= SUN_EQU_RA_TOL )
+  if ( fabs((objects[OBJECT_ID_SUN].equ_ra - expected_output[4])) <= SUN_EQU_RA_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_SUN].equ_dec - expected_output[5])) <= SUN_EQU_DEC_TOL )
+  if ( fabs((objects[OBJECT_ID_SUN].equ_dec - expected_output[5])) <= SUN_EQU_DEC_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_SUN].hor_altitude - expected_output[6])) <= SUN_HOR_ALTITUDE_TOL )
+  if ( fabs((objects[OBJECT_ID_SUN].hor_altitude - expected_output[6])) <= SUN_HOR_ALTITUDE_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_SUN].hor_azimuth - expected_output[7])) <= SUN_HOR_AZIMUTH_TOL )
+  if ( fabs((objects[OBJECT_ID_SUN].hor_azimuth - expected_output[7])) <= SUN_HOR_AZIMUTH_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_SUN].earth_object_distance - expected_output[8])) <= SUN_EARTH_DIST_TOL )
+  if ( fabs((objects[OBJECT_ID_SUN].earth_object_distance - expected_output[8])) <= SUN_EARTH_DIST_TOL )
     results_check++;
 
-  if ( abs((objects[OBJECT_ID_SUN].angular_size - expected_output[9])) <= SUN_ANGULAR_SIZE_TOL )
+  if ( fabs((objects[OBJECT_ID_SUN].angular_size - expected_output[9])) <= SUN_ANGULAR_SIZE_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_SUN].light_travel_time - expected_output[10])) <= SUN_LIGHT_TRAVEL_TOL )
+  if ( fabs((objects[OBJECT_ID_SUN].light_travel_time - expected_output[10])) <= SUN_LIGHT_TRAVEL_TOL )
     results_check++;	
     
-  if ( abs((objects[OBJECT_ID_SUN].sun_object_distance - expected_output[11])) <= SUN_SUN_DIST_TOL )
+  if ( fabs((objects[OBJECT_ID_SUN].sun_object_distance - expected_output[11])) <= SUN_SUN_DIST_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_SUN].phase - expected_output[12])) <= SUN_PHASE_TOL )
+  if ( fabs((objects[OBJECT_ID_SUN].phase - expected_output[12])) <= SUN_PHASE_TOL )
     results_check++;   
 
-  if ( abs((objects[OBJECT_ID_SUN].magnitude - expected_output[13])) <= SUN_MAG_TOL )
+  if ( fabs((objects[OBJECT_ID_SUN].magnitude - expected_output[13])) <= SUN_MAG_TOL )
     results_check++;     
 
-  if ( abs((objects[OBJECT_ID_SUN].azimuth_rise - expected_output[14])) <= SUN_AZIMUTH_RISE_TOL )
+  if ( fabs((objects[OBJECT_ID_SUN].azimuth_rise - expected_output[14])) <= SUN_AZIMUTH_RISE_TOL )
     results_check++;     
 
-  if ( abs((objects[OBJECT_ID_SUN].azimuth_set - expected_output[15])) <= SUN_AZIMUTH_SET_TOL )
+  if ( fabs((objects[OBJECT_ID_SUN].azimuth_set - expected_output[15])) <= SUN_AZIMUTH_SET_TOL )
     results_check++;     
 
-  if ( abs((objects[OBJECT_ID_SUN].rise_time - expected_output[16])) <= SUN_RISE_TIME_TOL )
+  if ( fabs((objects[OBJECT_ID_SUN].rise_time - expected_output[16])) <= SUN_RISE_TIME_TOL )
     results_check++;     
 
-  if ( abs((objects[OBJECT_ID_SUN].transit_time - expected_output[17])) <= SUN_TRANSIT_TIME_TOL )
+  if ( fabs((objects[OBJECT_ID_SUN].transit_time - expected_output[17])) <= SUN_TRANSIT_TIME_TOL )
     results_check++;     
 
-  if ( abs((objects[OBJECT_ID_SUN].set_time - expected_output[18])) <= SUN_SET_TIME_TOL )
+  if ( fabs((objects[OBJECT_ID_SUN].set_time - expected_output[18])) <= SUN_SET_TIME_TOL )
     results_check++;     
     			    			
   // These lines are used for diagnostic reasons.
@@ -764,61 +792,61 @@ BOOST_AUTO_TEST_CASE( TestJunit002_001_000_0000 )
   objects = api.object_details(2447487.50000,0.0,51.5);	
 
   // Check that the answer is within the tolerance.
-  if ( abs((objects[OBJECT_ID_MOON].actual_geo_ecliptic_lambda - expected_output[0])) <= MOON_GEO_ECL_LAMBDA_TOL )
+  if ( fabs((objects[OBJECT_ID_MOON].actual_geo_ecliptic_lambda - expected_output[0])) <= MOON_GEO_ECL_LAMBDA_TOL )
     results_check++;
   						
-  if ( abs((objects[OBJECT_ID_MOON].actual_geo_ecliptic_beta - expected_output[1])) <= MOON_GEO_ECL_BETA_TOL )
+  if ( fabs((objects[OBJECT_ID_MOON].actual_geo_ecliptic_beta - expected_output[1])) <= MOON_GEO_ECL_BETA_TOL )
     results_check++;
 	
-  if ( abs((objects[OBJECT_ID_MOON].actual_helio_ecliptic_lambda - expected_output[2])) <= MOON_HELIO_ECL_LAMBDA_TOL )
+  if ( fabs((objects[OBJECT_ID_MOON].actual_helio_ecliptic_lambda - expected_output[2])) <= MOON_HELIO_ECL_LAMBDA_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_MOON].actual_helio_ecliptic_beta - expected_output[3])) <= MOON_HELIO_ECL_BETA_TOL )
+  if ( fabs((objects[OBJECT_ID_MOON].actual_helio_ecliptic_beta - expected_output[3])) <= MOON_HELIO_ECL_BETA_TOL )
     results_check++;			
 		
-  if ( abs((objects[OBJECT_ID_MOON].equ_ra - expected_output[4])) <= MOON_EQU_RA_TOL )
+  if ( fabs((objects[OBJECT_ID_MOON].equ_ra - expected_output[4])) <= MOON_EQU_RA_TOL )
     results_check++;	
 		
-  if ( abs((objects[OBJECT_ID_MOON].equ_dec - expected_output[5])) <= MOON_EQU_DEC_TOL )
+  if ( fabs((objects[OBJECT_ID_MOON].equ_dec - expected_output[5])) <= MOON_EQU_DEC_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_MOON].hor_altitude - expected_output[6])) <= MOON_HOR_ALTITUDE_TOL )
+  if ( fabs((objects[OBJECT_ID_MOON].hor_altitude - expected_output[6])) <= MOON_HOR_ALTITUDE_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_MOON].hor_azimuth - expected_output[7])) <= MOON_HOR_AZIMUTH_TOL )
+  if ( fabs((objects[OBJECT_ID_MOON].hor_azimuth - expected_output[7])) <= MOON_HOR_AZIMUTH_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_MOON].earth_object_distance - expected_output[8])) <= MOON_EARTH_DIST_TOL )
+  if ( fabs((objects[OBJECT_ID_MOON].earth_object_distance - expected_output[8])) <= MOON_EARTH_DIST_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_MOON].angular_size - expected_output[9])) <= MOON_ANGULAR_SIZE_TOL )
+  if ( fabs((objects[OBJECT_ID_MOON].angular_size - expected_output[9])) <= MOON_ANGULAR_SIZE_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_MOON].light_travel_time - expected_output[10])) <= MOON_LIGHT_TRAVEL_TOL )
+  if ( fabs((objects[OBJECT_ID_MOON].light_travel_time - expected_output[10])) <= MOON_LIGHT_TRAVEL_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_MOON].sun_object_distance - expected_output[11])) <= MOON_SUN_DIST_TOL )
+  if ( fabs((objects[OBJECT_ID_MOON].sun_object_distance - expected_output[11])) <= MOON_SUN_DIST_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_MOON].phase - expected_output[12])) <= MOON_PHASE_TOL )
+  if ( fabs((objects[OBJECT_ID_MOON].phase - expected_output[12])) <= MOON_PHASE_TOL )
     results_check++;   
 
-  if ( abs((objects[OBJECT_ID_MOON].magnitude - expected_output[13])) <= MOON_MAG_TOL )
+  if ( fabs((objects[OBJECT_ID_MOON].magnitude - expected_output[13])) <= MOON_MAG_TOL )
     results_check++;     
 
-  if ( abs((objects[OBJECT_ID_MOON].azimuth_rise - expected_output[14])) <= MOON_AZIMUTH_RISE_TOL )
+  if ( fabs((objects[OBJECT_ID_MOON].azimuth_rise - expected_output[14])) <= MOON_AZIMUTH_RISE_TOL )
     results_check++;     
 
-  if ( abs((objects[OBJECT_ID_MOON].azimuth_set - expected_output[15])) <= MOON_AZIMUTH_SET_TOL )
+  if ( fabs((objects[OBJECT_ID_MOON].azimuth_set - expected_output[15])) <= MOON_AZIMUTH_SET_TOL )
     results_check++;    
 
-  if ( abs((objects[OBJECT_ID_MOON].rise_time - expected_output[16])) <= MOON_RISE_TIME_TOL )
+  if ( fabs((objects[OBJECT_ID_MOON].rise_time - expected_output[16])) <= MOON_RISE_TIME_TOL )
     results_check++;     
 
-  if ( abs((objects[OBJECT_ID_MOON].transit_time - expected_output[17])) <= MOON_TRANSIT_TIME_TOL )
+  if ( fabs((objects[OBJECT_ID_MOON].transit_time - expected_output[17])) <= MOON_TRANSIT_TIME_TOL )
     results_check++;     
 
-  if ( abs((objects[OBJECT_ID_MOON].set_time - expected_output[18])) <= MOON_SET_TIME_TOL )
+  if ( fabs((objects[OBJECT_ID_MOON].set_time - expected_output[18])) <= MOON_SET_TIME_TOL )
     results_check++;     
 
   // These lines are used for diagnostic reasons.
@@ -906,61 +934,61 @@ BOOST_AUTO_TEST_CASE( TestJunit002_002_000_0000 )
   objects = api.object_details(2447487.50000,0.0,51.5);
 						
   // Check that the answer is within the tolerance.
-  if ( abs((objects[OBJECT_ID_MERCURY].actual_geo_ecliptic_lambda - expected_output[0])) <= MERCURY_GEO_ECL_LAMBDA_TOL )
+  if ( fabs((objects[OBJECT_ID_MERCURY].actual_geo_ecliptic_lambda - expected_output[0])) <= MERCURY_GEO_ECL_LAMBDA_TOL )
     results_check++;
 
-  if ( abs((objects[OBJECT_ID_MERCURY].actual_geo_ecliptic_beta - expected_output[1])) <= MERCURY_GEO_ECL_BETA_TOL )
+  if ( fabs((objects[OBJECT_ID_MERCURY].actual_geo_ecliptic_beta - expected_output[1])) <= MERCURY_GEO_ECL_BETA_TOL )
     results_check++;
 
-  if ( abs((objects[OBJECT_ID_MERCURY].actual_helio_ecliptic_lambda - expected_output[2])) <= MERCURY_HELIO_ECL_LAMBDA_TOL )
+  if ( fabs((objects[OBJECT_ID_MERCURY].actual_helio_ecliptic_lambda - expected_output[2])) <= MERCURY_HELIO_ECL_LAMBDA_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_MERCURY].actual_helio_ecliptic_beta - expected_output[3])) <= MERCURY_HELIO_ECL_BETA_TOL )
+  if ( fabs((objects[OBJECT_ID_MERCURY].actual_helio_ecliptic_beta - expected_output[3])) <= MERCURY_HELIO_ECL_BETA_TOL )
     results_check++;			
 	
-  if ( abs((objects[OBJECT_ID_MERCURY].equ_ra - expected_output[4])) <= MERCURY_EQU_RA_TOL )
+  if ( fabs((objects[OBJECT_ID_MERCURY].equ_ra - expected_output[4])) <= MERCURY_EQU_RA_TOL )
     results_check++;	
 	
-  if ( abs((objects[OBJECT_ID_MERCURY].equ_dec - expected_output[5])) <= MERCURY_EQU_DEC_TOL )
+  if ( fabs((objects[OBJECT_ID_MERCURY].equ_dec - expected_output[5])) <= MERCURY_EQU_DEC_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_MERCURY].hor_altitude - expected_output[6])) <= MERCURY_HOR_ALTITUDE_TOL )
+  if ( fabs((objects[OBJECT_ID_MERCURY].hor_altitude - expected_output[6])) <= MERCURY_HOR_ALTITUDE_TOL )
     results_check++;	
 	
-  if ( abs((objects[OBJECT_ID_MERCURY].hor_azimuth - expected_output[7])) <= MERCURY_HOR_AZIMUTH_TOL )
+  if ( fabs((objects[OBJECT_ID_MERCURY].hor_azimuth - expected_output[7])) <= MERCURY_HOR_AZIMUTH_TOL )
     results_check++;	
 	
-  if ( abs((objects[OBJECT_ID_MERCURY].earth_object_distance - expected_output[8])) <= MERCURY_EARTH_DIST_TOL )
+  if ( fabs((objects[OBJECT_ID_MERCURY].earth_object_distance - expected_output[8])) <= MERCURY_EARTH_DIST_TOL )
     results_check++;	
 	
-  if ( abs((objects[OBJECT_ID_MERCURY].angular_size - expected_output[9])) <= MERCURY_ANGULAR_SIZE_TOL )
+  if ( fabs((objects[OBJECT_ID_MERCURY].angular_size - expected_output[9])) <= MERCURY_ANGULAR_SIZE_TOL )
     results_check++;	
 	  
-  if ( abs((objects[OBJECT_ID_MERCURY].light_travel_time - expected_output[10])) <= MERCURY_LIGHT_TRAVEL_TOL )
+  if ( fabs((objects[OBJECT_ID_MERCURY].light_travel_time - expected_output[10])) <= MERCURY_LIGHT_TRAVEL_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_MERCURY].sun_object_distance - expected_output[11])) <= MERCURY_SUN_DIST_TOL )
+  if ( fabs((objects[OBJECT_ID_MERCURY].sun_object_distance - expected_output[11])) <= MERCURY_SUN_DIST_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_MERCURY].phase - expected_output[12])) <= MERCURY_PHASE_TOL )
+  if ( fabs((objects[OBJECT_ID_MERCURY].phase - expected_output[12])) <= MERCURY_PHASE_TOL )
     results_check++;   
 		    
-  if ( abs((objects[OBJECT_ID_MERCURY].magnitude - expected_output[13])) <= MERCURY_MAG_TOL )
+  if ( fabs((objects[OBJECT_ID_MERCURY].magnitude - expected_output[13])) <= MERCURY_MAG_TOL )
     results_check++;     
     
-  if ( abs((objects[OBJECT_ID_MERCURY].azimuth_rise - expected_output[14])) <= MERCURY_AZIMUTH_RISE_TOL )
+  if ( fabs((objects[OBJECT_ID_MERCURY].azimuth_rise - expected_output[14])) <= MERCURY_AZIMUTH_RISE_TOL )
     results_check++;     
 		  
-  if ( abs((objects[OBJECT_ID_MERCURY].azimuth_set - expected_output[15])) <= MERCURY_AZIMUTH_SET_TOL )
+  if ( fabs((objects[OBJECT_ID_MERCURY].azimuth_set - expected_output[15])) <= MERCURY_AZIMUTH_SET_TOL )
     results_check++;    
   
-  if ( abs((objects[OBJECT_ID_MERCURY].rise_time - expected_output[16])) <= MERCURY_RISE_TIME_TOL )
+  if ( fabs((objects[OBJECT_ID_MERCURY].rise_time - expected_output[16])) <= MERCURY_RISE_TIME_TOL )
     results_check++;     
 	  
-  if ( abs((objects[OBJECT_ID_MERCURY].transit_time - expected_output[17])) <= MERCURY_TRANSIT_TIME_TOL )
+  if ( fabs((objects[OBJECT_ID_MERCURY].transit_time - expected_output[17])) <= MERCURY_TRANSIT_TIME_TOL )
     results_check++;     
   
-  if ( abs((objects[OBJECT_ID_MERCURY].set_time - expected_output[18])) <= MERCURY_SET_TIME_TOL )
+  if ( fabs((objects[OBJECT_ID_MERCURY].set_time - expected_output[18])) <= MERCURY_SET_TIME_TOL )
     results_check++;       
  
   // These lines are used for diagnostic reasons.
@@ -1048,61 +1076,61 @@ BOOST_AUTO_TEST_CASE( TestJunit002_003_000_0000 )
   objects = api.object_details(2447487.50000,0.0,51.5);
 						
   // Check that the answer is within the tolerance.
-  if ( abs((objects[OBJECT_ID_VENUS].actual_geo_ecliptic_lambda - expected_output[0])) <= VENUS_GEO_ECL_LAMBDA_TOL )
+  if ( fabs((objects[OBJECT_ID_VENUS].actual_geo_ecliptic_lambda - expected_output[0])) <= VENUS_GEO_ECL_LAMBDA_TOL )
     results_check++;
 
-  if ( abs((objects[OBJECT_ID_VENUS].actual_geo_ecliptic_beta - expected_output[1])) <= VENUS_GEO_ECL_BETA_TOL )
+  if ( fabs((objects[OBJECT_ID_VENUS].actual_geo_ecliptic_beta - expected_output[1])) <= VENUS_GEO_ECL_BETA_TOL )
     results_check++;
 
-  if ( abs((objects[OBJECT_ID_VENUS].actual_helio_ecliptic_lambda - expected_output[2])) <= VENUS_HELIO_ECL_LAMBDA_TOL )
+  if ( fabs((objects[OBJECT_ID_VENUS].actual_helio_ecliptic_lambda - expected_output[2])) <= VENUS_HELIO_ECL_LAMBDA_TOL )
     results_check++;
 
-  if ( abs((objects[OBJECT_ID_VENUS].actual_helio_ecliptic_beta - expected_output[3])) <= VENUS_HELIO_ECL_BETA_TOL )
+  if ( fabs((objects[OBJECT_ID_VENUS].actual_helio_ecliptic_beta - expected_output[3])) <= VENUS_HELIO_ECL_BETA_TOL )
     results_check++;			
 	
-  if ( abs((objects[OBJECT_ID_VENUS].equ_ra - expected_output[4])) <= VENUS_EQU_RA_TOL )
+  if ( fabs((objects[OBJECT_ID_VENUS].equ_ra - expected_output[4])) <= VENUS_EQU_RA_TOL )
     results_check++;	
 	
-  if ( abs((objects[OBJECT_ID_VENUS].equ_dec - expected_output[5])) <= VENUS_EQU_DEC_TOL )
+  if ( fabs((objects[OBJECT_ID_VENUS].equ_dec - expected_output[5])) <= VENUS_EQU_DEC_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_VENUS].hor_altitude - expected_output[6])) <= VENUS_HOR_ALTITUDE_TOL )
+  if ( fabs((objects[OBJECT_ID_VENUS].hor_altitude - expected_output[6])) <= VENUS_HOR_ALTITUDE_TOL )
     results_check++;	
 	
-  if ( abs((objects[OBJECT_ID_VENUS].hor_azimuth - expected_output[7])) <= VENUS_HOR_AZIMUTH_TOL )
+  if ( fabs((objects[OBJECT_ID_VENUS].hor_azimuth - expected_output[7])) <= VENUS_HOR_AZIMUTH_TOL )
     results_check++;	
 	
-  if ( abs((objects[OBJECT_ID_VENUS].earth_object_distance - expected_output[8])) <= VENUS_EARTH_DIST_TOL )
+  if ( fabs((objects[OBJECT_ID_VENUS].earth_object_distance - expected_output[8])) <= VENUS_EARTH_DIST_TOL )
     results_check++;	
 	
-  if ( abs((objects[OBJECT_ID_VENUS].angular_size - expected_output[9])) <= VENUS_ANGULAR_SIZE_TOL )
+  if ( fabs((objects[OBJECT_ID_VENUS].angular_size - expected_output[9])) <= VENUS_ANGULAR_SIZE_TOL )
     results_check++;	
  		  
-  if ( abs((objects[OBJECT_ID_VENUS].light_travel_time - expected_output[10])) <= VENUS_LIGHT_TRAVEL_TOL )
+  if ( fabs((objects[OBJECT_ID_VENUS].light_travel_time - expected_output[10])) <= VENUS_LIGHT_TRAVEL_TOL )
     results_check++;	
  
-  if ( abs((objects[OBJECT_ID_VENUS].sun_object_distance - expected_output[11])) <= VENUS_SUN_DIST_TOL )
+  if ( fabs((objects[OBJECT_ID_VENUS].sun_object_distance - expected_output[11])) <= VENUS_SUN_DIST_TOL )
     results_check++;	
 	        
-  if ( abs((objects[OBJECT_ID_VENUS].phase - expected_output[12])) <= VENUS_PHASE_TOL )
+  if ( fabs((objects[OBJECT_ID_VENUS].phase - expected_output[12])) <= VENUS_PHASE_TOL )
     results_check++;   
 		    
-  if ( abs((objects[OBJECT_ID_VENUS].magnitude - expected_output[13])) <= VENUS_MAG_TOL )
+  if ( fabs((objects[OBJECT_ID_VENUS].magnitude - expected_output[13])) <= VENUS_MAG_TOL )
     results_check++;     
 	    
-  if ( abs((objects[OBJECT_ID_VENUS].azimuth_rise - expected_output[14])) <= VENUS_AZIMUTH_RISE_TOL )
+  if ( fabs((objects[OBJECT_ID_VENUS].azimuth_rise - expected_output[14])) <= VENUS_AZIMUTH_RISE_TOL )
     results_check++;     
 	  
-  if ( abs((objects[OBJECT_ID_VENUS].azimuth_set - expected_output[15])) <= VENUS_AZIMUTH_SET_TOL )
+  if ( fabs((objects[OBJECT_ID_VENUS].azimuth_set - expected_output[15])) <= VENUS_AZIMUTH_SET_TOL )
     results_check++;    
 	  
-  if ( abs((objects[OBJECT_ID_VENUS].rise_time - expected_output[16])) <= VENUS_RISE_TIME_TOL )
+  if ( fabs((objects[OBJECT_ID_VENUS].rise_time - expected_output[16])) <= VENUS_RISE_TIME_TOL )
     results_check++;     
 	  
-  if ( abs((objects[OBJECT_ID_VENUS].transit_time - expected_output[17])) <= VENUS_TRANSIT_TIME_TOL )
+  if ( fabs((objects[OBJECT_ID_VENUS].transit_time - expected_output[17])) <= VENUS_TRANSIT_TIME_TOL )
     results_check++;     
 	  
-  if ( abs((objects[OBJECT_ID_VENUS].set_time - expected_output[18])) <= VENUS_SET_TIME_TOL )
+  if ( fabs((objects[OBJECT_ID_VENUS].set_time - expected_output[18])) <= VENUS_SET_TIME_TOL )
     results_check++;       	
 
   // These lines are used for diagnostic reasons.
@@ -1132,7 +1160,7 @@ BOOST_AUTO_TEST_CASE( TestJunit002_003_000_0000 )
   cout << "Venus actual_geo_ecliptic_lambda     = " << objects[OBJECT_ID_VENUS].actual_geo_ecliptic_lambda << endl;
   cout << "Venus actual geo ecliptic beta       = " << objects[OBJECT_ID_VENUS].actual_geo_ecliptic_beta << endl; 
   cout << "Venus actual_helio_ecliptic_lambda   = " << objects[OBJECT_ID_VENUS].actual_helio_ecliptic_lambda << endl;
-  cout << "Venus actual helio ecliptic -1.032 beta     = " << objects[OBJECT_ID_VENUS].actual_helio_ecliptic_beta << endl;
+  cout << "Venus actual helio ecliptic beta     = " << objects[OBJECT_ID_VENUS].actual_helio_ecliptic_beta << endl;
   cout << "Venus RA                             = " << objects[OBJECT_ID_VENUS].equ_ra << endl;
   cout << "Venus DEC                            = " << objects[OBJECT_ID_VENUS].equ_dec << endl;	
   cout << "Venus hor_altitude                   = " << objects[OBJECT_ID_VENUS].hor_altitude << endl;
@@ -1190,61 +1218,61 @@ BOOST_AUTO_TEST_CASE( TestJunit002_004_000_0000 )
   objects = api.object_details(2447487.50000,0.0,51.5);
 						
   // Check that the answer is within the tolerance.
-  if ( abs((objects[OBJECT_ID_EARTH].actual_geo_ecliptic_lambda - expected_output[0])) <= EARTH_GEO_ECL_LAMBDA_TOL )
+  if ( fabs((objects[OBJECT_ID_EARTH].actual_geo_ecliptic_lambda - expected_output[0])) <= EARTH_GEO_ECL_LAMBDA_TOL )
     results_check++;
   							
-  if ( abs((objects[OBJECT_ID_EARTH].actual_geo_ecliptic_beta - expected_output[1])) <= EARTH_GEO_ECL_BETA_TOL )
+  if ( fabs((objects[OBJECT_ID_EARTH].actual_geo_ecliptic_beta - expected_output[1])) <= EARTH_GEO_ECL_BETA_TOL )
     results_check++;
 			
-  if ( abs((objects[OBJECT_ID_EARTH].actual_helio_ecliptic_lambda - expected_output[2])) <= EARTH_HELIO_ECL_LAMBDA_TOL )
+  if ( fabs((objects[OBJECT_ID_EARTH].actual_helio_ecliptic_lambda - expected_output[2])) <= EARTH_HELIO_ECL_LAMBDA_TOL )
     results_check++;			
 		
-  if ( abs((objects[OBJECT_ID_EARTH].actual_helio_ecliptic_beta - expected_output[3])) <= EARTH_HELIO_ECL_BETA_TOL )
+  if ( fabs((objects[OBJECT_ID_EARTH].actual_helio_ecliptic_beta - expected_output[3])) <= EARTH_HELIO_ECL_BETA_TOL )
     results_check++;			
 
-  if ( abs((objects[OBJECT_ID_EARTH].equ_ra - expected_output[4])) <= EARTH_EQU_RA_TOL )
+  if ( fabs((objects[OBJECT_ID_EARTH].equ_ra - expected_output[4])) <= EARTH_EQU_RA_TOL )
     results_check++;
 
-  if ( abs((objects[OBJECT_ID_EARTH].equ_dec - expected_output[5])) <= EARTH_EQU_DEC_TOL )
+  if ( fabs((objects[OBJECT_ID_EARTH].equ_dec - expected_output[5])) <= EARTH_EQU_DEC_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_EARTH].hor_altitude - expected_output[6])) <= EARTH_HOR_ALTITUDE_TOL )
+  if ( fabs((objects[OBJECT_ID_EARTH].hor_altitude - expected_output[6])) <= EARTH_HOR_ALTITUDE_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_EARTH].hor_azimuth - expected_output[7])) <= EARTH_HOR_AZIMUTH_TOL )
+  if ( fabs((objects[OBJECT_ID_EARTH].hor_azimuth - expected_output[7])) <= EARTH_HOR_AZIMUTH_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_EARTH].sun_object_distance - expected_output[8])) <= EARTH_EARTH_DIST_TOL )
+  if ( fabs((objects[OBJECT_ID_EARTH].sun_object_distance - expected_output[8])) <= EARTH_EARTH_DIST_TOL )
     results_check++; 
   
-  if ( abs((objects[OBJECT_ID_EARTH].light_travel_time - expected_output[10])) <= EARTH_ANGULAR_SIZE_TOL )
+  if ( fabs((objects[OBJECT_ID_EARTH].light_travel_time - expected_output[10])) <= EARTH_ANGULAR_SIZE_TOL )
     results_check++;	
        
-  if ( abs((objects[OBJECT_ID_EARTH].earth_object_distance - expected_output[11])) <= EARTH_EARTH_DIST_TOL )
+  if ( fabs((objects[OBJECT_ID_EARTH].earth_object_distance - expected_output[11])) <= EARTH_EARTH_DIST_TOL )
     results_check++;	
       
-  if ( abs((objects[OBJECT_ID_EARTH].angular_size - expected_output[9])) <= EARTH_SUN_DIST_TOL )
+  if ( fabs((objects[OBJECT_ID_EARTH].angular_size - expected_output[9])) <= EARTH_SUN_DIST_TOL )
     results_check++;	
     
-  if ( abs((objects[OBJECT_ID_EARTH].phase - expected_output[12])) <= EARTH_PHASE_TOL )
+  if ( fabs((objects[OBJECT_ID_EARTH].phase - expected_output[12])) <= EARTH_PHASE_TOL )
     results_check++;   
     
-  if ( abs((objects[OBJECT_ID_EARTH].magnitude - expected_output[13])) <= EARTH_MAG_TOL )
+  if ( fabs((objects[OBJECT_ID_EARTH].magnitude - expected_output[13])) <= EARTH_MAG_TOL )
     results_check++;     
     
-  if ( abs((objects[OBJECT_ID_EARTH].azimuth_rise - expected_output[14])) <= EARTH_AZIMUTH_RISE_TOL )
+  if ( fabs((objects[OBJECT_ID_EARTH].azimuth_rise - expected_output[14])) <= EARTH_AZIMUTH_RISE_TOL )
     results_check++;     
   
-  if ( abs((objects[OBJECT_ID_EARTH].azimuth_set - expected_output[15])) <= EARTH_AZIMUTH_SET_TOL )
+  if ( fabs((objects[OBJECT_ID_EARTH].azimuth_set - expected_output[15])) <= EARTH_AZIMUTH_SET_TOL )
     results_check++;     
     
-  if ( abs((objects[OBJECT_ID_EARTH].rise_time - expected_output[16])) <= EARTH_RISE_TIME_TOL )
+  if ( fabs((objects[OBJECT_ID_EARTH].rise_time - expected_output[16])) <= EARTH_RISE_TIME_TOL )
     results_check++;     
    
-  if ( abs((objects[OBJECT_ID_EARTH].transit_time - expected_output[17])) <= EARTH_TRANSIT_TIME_TOL )
+  if ( fabs((objects[OBJECT_ID_EARTH].transit_time - expected_output[17])) <= EARTH_TRANSIT_TIME_TOL )
     results_check++;     
   
-  if ( abs((objects[OBJECT_ID_EARTH].set_time - expected_output[18])) <= EARTH_SET_TIME_TOL )
+  if ( fabs((objects[OBJECT_ID_EARTH].set_time - expected_output[18])) <= EARTH_SET_TIME_TOL )
     results_check++;     	  			
     			
   // These lines are used for diagnostic reasons.
@@ -1332,61 +1360,61 @@ BOOST_AUTO_TEST_CASE( TestJunit002_005_000_0000 )
   objects = api.object_details(2447487.50000,0.0,51.5);
 						
   // Check that the answer is within the tolerance.
-  if ( abs((objects[OBJECT_ID_MARS].actual_geo_ecliptic_lambda - expected_output[0])) <= MARS_GEO_ECL_LAMBDA_TOL )
+  if ( fabs((objects[OBJECT_ID_MARS].actual_geo_ecliptic_lambda - expected_output[0])) <= MARS_GEO_ECL_LAMBDA_TOL )
     results_check++;
 
-  if ( abs((objects[OBJECT_ID_MARS].actual_geo_ecliptic_beta - expected_output[1])) <= MARS_GEO_ECL_BETA_TOL )
+  if ( fabs((objects[OBJECT_ID_MARS].actual_geo_ecliptic_beta - expected_output[1])) <= MARS_GEO_ECL_BETA_TOL )
     results_check++;
 	
-  if ( abs((objects[OBJECT_ID_MARS].actual_helio_ecliptic_lambda - expected_output[2])) <= MARS_HELIO_ECL_LAMBDA_TOL )
+  if ( fabs((objects[OBJECT_ID_MARS].actual_helio_ecliptic_lambda - expected_output[2])) <= MARS_HELIO_ECL_LAMBDA_TOL )
     results_check++;	
     							
-  if ( abs((objects[OBJECT_ID_MARS].actual_helio_ecliptic_beta - expected_output[3])) <= MARS_HELIO_ECL_BETA_TOL )
+  if ( fabs((objects[OBJECT_ID_MARS].actual_helio_ecliptic_beta - expected_output[3])) <= MARS_HELIO_ECL_BETA_TOL )
     results_check++;			
 	
-  if ( abs((objects[OBJECT_ID_MARS].equ_ra - expected_output[4])) <= MARS_EQU_RA_TOL )
+  if ( fabs((objects[OBJECT_ID_MARS].equ_ra - expected_output[4])) <= MARS_EQU_RA_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_MARS].equ_dec - expected_output[5])) <= MARS_EQU_DEC_TOL )
+  if ( fabs((objects[OBJECT_ID_MARS].equ_dec - expected_output[5])) <= MARS_EQU_DEC_TOL )
     results_check++;	
 	
-  if ( abs((objects[OBJECT_ID_MARS].hor_altitude - expected_output[6])) <= MARS_HOR_ALTITUDE_TOL )
+  if ( fabs((objects[OBJECT_ID_MARS].hor_altitude - expected_output[6])) <= MARS_HOR_ALTITUDE_TOL )
     results_check++;	
 		
-  if ( abs((objects[OBJECT_ID_MARS].hor_azimuth - expected_output[7])) <= MARS_HOR_AZIMUTH_TOL )
+  if ( fabs((objects[OBJECT_ID_MARS].hor_azimuth - expected_output[7])) <= MARS_HOR_AZIMUTH_TOL )
     results_check++;	
 		
-  if ( abs((objects[OBJECT_ID_MARS].earth_object_distance - expected_output[8])) <= MARS_EARTH_DIST_TOL )
+  if ( fabs((objects[OBJECT_ID_MARS].earth_object_distance - expected_output[8])) <= MARS_EARTH_DIST_TOL )
     results_check++;	
 		
-  if ( abs((objects[OBJECT_ID_MARS].angular_size - expected_output[9])) <= MARS_ANGULAR_SIZE_TOL )
+  if ( fabs((objects[OBJECT_ID_MARS].angular_size - expected_output[9])) <= MARS_ANGULAR_SIZE_TOL )
     results_check++;	
     		  
-  if ( abs((objects[OBJECT_ID_MARS].light_travel_time - expected_output[10])) <= MARS_LIGHT_TRAVEL_TOL )
+  if ( fabs((objects[OBJECT_ID_MARS].light_travel_time - expected_output[10])) <= MARS_LIGHT_TRAVEL_TOL )
     results_check++;	
     
-  if ( abs((objects[OBJECT_ID_MARS].sun_object_distance - expected_output[11])) <= MARS_SUN_DIST_TOL )
+  if ( fabs((objects[OBJECT_ID_MARS].sun_object_distance - expected_output[11])) <= MARS_SUN_DIST_TOL )
     results_check++;	
 		        
-  if ( abs((objects[OBJECT_ID_MARS].phase - expected_output[12])) <= MARS_PHASE_TOL )
+  if ( fabs((objects[OBJECT_ID_MARS].phase - expected_output[12])) <= MARS_PHASE_TOL )
     results_check++;   
     		    
-  if ( abs((objects[OBJECT_ID_MARS].magnitude - expected_output[13])) <= MARS_MAG_TOL )
+  if ( fabs((objects[OBJECT_ID_MARS].magnitude - expected_output[13])) <= MARS_MAG_TOL )
     results_check++;     
 	    
-  if ( abs((objects[OBJECT_ID_MARS].azimuth_rise - expected_output[14])) <= MARS_AZIMUTH_RISE_TOL )
+  if ( fabs((objects[OBJECT_ID_MARS].azimuth_rise - expected_output[14])) <= MARS_AZIMUTH_RISE_TOL )
     results_check++;     
 		  
-  if ( abs((objects[OBJECT_ID_MARS].azimuth_set - expected_output[15])) <= MARS_AZIMUTH_SET_TOL )
+  if ( fabs((objects[OBJECT_ID_MARS].azimuth_set - expected_output[15])) <= MARS_AZIMUTH_SET_TOL )
     results_check++;    
      		  
-  if ( abs((objects[OBJECT_ID_MARS].rise_time - expected_output[16])) <= MARS_RISE_TIME_TOL )
+  if ( fabs((objects[OBJECT_ID_MARS].rise_time - expected_output[16])) <= MARS_RISE_TIME_TOL )
     results_check++;     
     		  
-  if ( abs((objects[OBJECT_ID_MARS].transit_time - expected_output[17])) <= MARS_TRANSIT_TIME_TOL )
+  if ( fabs((objects[OBJECT_ID_MARS].transit_time - expected_output[17])) <= MARS_TRANSIT_TIME_TOL )
     results_check++;     
   		  
-  if ( abs((objects[OBJECT_ID_MARS].set_time - expected_output[18])) <= MARS_SET_TIME_TOL )
+  if ( fabs((objects[OBJECT_ID_MARS].set_time - expected_output[18])) <= MARS_SET_TIME_TOL )
     results_check++;     			    			  	
     			
   // These lines are used for diagnostic reasons.
@@ -1474,61 +1502,61 @@ BOOST_AUTO_TEST_CASE( TestJunit002_006_000_0000 )
   objects = api.object_details(2447487.50000,0.0,51.5);
   						
   // Check that the answer is within the tolerance.
-  if ( abs((objects[OBJECT_ID_JUPITER].actual_geo_ecliptic_lambda - expected_output[0])) <= JUPITER_GEO_ECL_LAMBDA_TOL )
+  if ( fabs((objects[OBJECT_ID_JUPITER].actual_geo_ecliptic_lambda - expected_output[0])) <= JUPITER_GEO_ECL_LAMBDA_TOL )
     results_check++;
 
-  if ( abs((objects[OBJECT_ID_JUPITER].actual_geo_ecliptic_beta - expected_output[1])) <= JUPITER_GEO_ECL_BETA_TOL )
+  if ( fabs((objects[OBJECT_ID_JUPITER].actual_geo_ecliptic_beta - expected_output[1])) <= JUPITER_GEO_ECL_BETA_TOL )
     results_check++;
 	
-  if ( abs((objects[OBJECT_ID_JUPITER].actual_helio_ecliptic_lambda - expected_output[2])) <= JUPITER_HELIO_ECL_LAMBDA_TOL )
+  if ( fabs((objects[OBJECT_ID_JUPITER].actual_helio_ecliptic_lambda - expected_output[2])) <= JUPITER_HELIO_ECL_LAMBDA_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_JUPITER].actual_helio_ecliptic_beta - expected_output[3])) <= JUPITER_HELIO_ECL_BETA_TOL )
+  if ( fabs((objects[OBJECT_ID_JUPITER].actual_helio_ecliptic_beta - expected_output[3])) <= JUPITER_HELIO_ECL_BETA_TOL )
     results_check++;			
 	
-  if ( abs((objects[OBJECT_ID_JUPITER].equ_ra - expected_output[4])) <= JUPITER_EQU_RA_TOL )
+  if ( fabs((objects[OBJECT_ID_JUPITER].equ_ra - expected_output[4])) <= JUPITER_EQU_RA_TOL )
     results_check++;	
 		
-  if ( abs((objects[OBJECT_ID_JUPITER].equ_dec - expected_output[5])) <= JUPITER_EQU_DEC_TOL )
+  if ( fabs((objects[OBJECT_ID_JUPITER].equ_dec - expected_output[5])) <= JUPITER_EQU_DEC_TOL )
     results_check++;	
 	
-  if ( abs((objects[OBJECT_ID_JUPITER].hor_altitude - expected_output[6])) <= JUPITER_HOR_ALTITUDE_TOL )
+  if ( fabs((objects[OBJECT_ID_JUPITER].hor_altitude - expected_output[6])) <= JUPITER_HOR_ALTITUDE_TOL )
     results_check++;	
 		
-  if ( abs((objects[OBJECT_ID_JUPITER].hor_azimuth - expected_output[7])) <= JUPITER_HOR_AZIMUTH_TOL )
+  if ( fabs((objects[OBJECT_ID_JUPITER].hor_azimuth - expected_output[7])) <= JUPITER_HOR_AZIMUTH_TOL )
     results_check++;	
 		
-  if ( abs((objects[OBJECT_ID_JUPITER].earth_object_distance - expected_output[8])) <= JUPITER_EARTH_DIST_TOL )
+  if ( fabs((objects[OBJECT_ID_JUPITER].earth_object_distance - expected_output[8])) <= JUPITER_EARTH_DIST_TOL )
     results_check++;	
 		
-  if ( abs((objects[OBJECT_ID_JUPITER].angular_size - expected_output[9])) <= JUPITER_ANGULAR_SIZE_TOL )
+  if ( fabs((objects[OBJECT_ID_JUPITER].angular_size - expected_output[9])) <= JUPITER_ANGULAR_SIZE_TOL )
     results_check++;	
   		  
-  if ( abs((objects[OBJECT_ID_JUPITER].light_travel_time - expected_output[10])) <= JUPITER_LIGHT_TRAVEL_TOL )
+  if ( fabs((objects[OBJECT_ID_JUPITER].light_travel_time - expected_output[10])) <= JUPITER_LIGHT_TRAVEL_TOL )
     results_check++;	
    
-  if ( abs((objects[OBJECT_ID_JUPITER].sun_object_distance - expected_output[11])) <= JUPITER_SUN_DIST_TOL )
+  if ( fabs((objects[OBJECT_ID_JUPITER].sun_object_distance - expected_output[11])) <= JUPITER_SUN_DIST_TOL )
     results_check++;	
 	        
-  if ( abs((objects[OBJECT_ID_JUPITER].phase - expected_output[12])) <= JUPITER_PHASE_TOL )
+  if ( fabs((objects[OBJECT_ID_JUPITER].phase - expected_output[12])) <= JUPITER_PHASE_TOL )
     results_check++;   
    		    
-  if ( abs((objects[OBJECT_ID_JUPITER].magnitude - expected_output[13])) <= JUPITER_MAG_TOL )
+  if ( fabs((objects[OBJECT_ID_JUPITER].magnitude - expected_output[13])) <= JUPITER_MAG_TOL )
     results_check++;     
 		    
-  if ( abs((objects[OBJECT_ID_JUPITER].azimuth_rise - expected_output[14])) <= JUPITER_AZIMUTH_RISE_TOL )
+  if ( fabs((objects[OBJECT_ID_JUPITER].azimuth_rise - expected_output[14])) <= JUPITER_AZIMUTH_RISE_TOL )
     results_check++;     
 		  
-  if ( abs((objects[OBJECT_ID_JUPITER].azimuth_set - expected_output[15])) <= JUPITER_AZIMUTH_SET_TOL )
+  if ( fabs((objects[OBJECT_ID_JUPITER].azimuth_set - expected_output[15])) <= JUPITER_AZIMUTH_SET_TOL )
     results_check++;    
     		  
-  if ( abs((objects[OBJECT_ID_JUPITER].rise_time - expected_output[16])) <= JUPITER_RISE_TIME_TOL )
+  if ( fabs((objects[OBJECT_ID_JUPITER].rise_time - expected_output[16])) <= JUPITER_RISE_TIME_TOL )
     results_check++;     
     		  
-  if ( abs((objects[OBJECT_ID_JUPITER].transit_time - expected_output[17])) <= JUPITER_TRANSIT_TIME_TOL )
+  if ( fabs((objects[OBJECT_ID_JUPITER].transit_time - expected_output[17])) <= JUPITER_TRANSIT_TIME_TOL )
     results_check++;     
   		  
-  if ( abs((objects[OBJECT_ID_JUPITER].set_time - expected_output[18])) <= JUPITER_SET_TIME_TOL )
+  if ( fabs((objects[OBJECT_ID_JUPITER].set_time - expected_output[18])) <= JUPITER_SET_TIME_TOL )
     results_check++;     
 		    			    			
   // These lines are used for diagnostic reasons.
@@ -1616,72 +1644,63 @@ BOOST_AUTO_TEST_CASE( TestJunit002_007_000_0000 )
   objects = api.object_details(2447487.50000,0.0,51.5);
 						
   // Check that the answer is within the tolerance.
-  if ( abs((objects[OBJECT_ID_SATURN].actual_geo_ecliptic_lambda - expected_output[0])) <= SATURN_GEO_ECL_LAMBDA_TOL )
+  if ( fabs((objects[OBJECT_ID_SATURN].actual_geo_ecliptic_lambda - expected_output[0])) <= SATURN_GEO_ECL_LAMBDA_TOL )
     results_check++;
 
-  if ( abs((objects[OBJECT_ID_SATURN].actual_geo_ecliptic_beta - expected_output[1])) <= SATURN_GEO_ECL_BETA_TOL )
+  if ( fabs((objects[OBJECT_ID_SATURN].actual_geo_ecliptic_beta - expected_output[1])) <= SATURN_GEO_ECL_BETA_TOL )
     results_check++;
 
-  if ( abs((objects[OBJECT_ID_SATURN].actual_helio_ecliptic_lambda - expected_output[2])) <= SATURN_HELIO_ECL_LAMBDA_TOL )
+  if ( fabs((objects[OBJECT_ID_SATURN].actual_helio_ecliptic_lambda - expected_output[2])) <= SATURN_HELIO_ECL_LAMBDA_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_SATURN].actual_helio_ecliptic_beta - expected_output[3])) <= SATURN_HELIO_ECL_BETA_TOL )
+  if ( fabs((objects[OBJECT_ID_SATURN].actual_helio_ecliptic_beta - expected_output[3])) <= SATURN_HELIO_ECL_BETA_TOL )
     results_check++;			
 		
-  if ( abs((objects[OBJECT_ID_SATURN].equ_ra - expected_output[4])) <= SATURN_EQU_RA_TOL )
+  if ( fabs((objects[OBJECT_ID_SATURN].equ_ra - expected_output[4])) <= SATURN_EQU_RA_TOL )
     results_check++;	
 		
-  if ( abs((objects[OBJECT_ID_SATURN].equ_dec - expected_output[5])) <= SATURN_EQU_DEC_TOL )
+  if ( fabs((objects[OBJECT_ID_SATURN].equ_dec - expected_output[5])) <= SATURN_EQU_DEC_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_SATURN].hor_altitude - expected_output[6])) <= SATURN_HOR_ALTITUDE_TOL )
+  if ( fabs((objects[OBJECT_ID_SATURN].hor_altitude - expected_output[6])) <= SATURN_HOR_ALTITUDE_TOL )
     results_check++;	
 		
-  if ( abs((objects[OBJECT_ID_SATURN].hor_azimuth - expected_output[7])) <= SATURN_HOR_AZIMUTH_TOL )
+  if ( fabs((objects[OBJECT_ID_SATURN].hor_azimuth - expected_output[7])) <= SATURN_HOR_AZIMUTH_TOL )
     results_check++;	
 		
-  if ( abs((objects[OBJECT_ID_SATURN].earth_object_distance - expected_output[8])) <= SATURN_EARTH_DIST_TOL )
+  if ( fabs((objects[OBJECT_ID_SATURN].earth_object_distance - expected_output[8])) <= SATURN_EARTH_DIST_TOL )
     results_check++;	
 	
-  if ( abs((objects[OBJECT_ID_SATURN].angular_size - expected_output[9])) <= SATURN_ANGULAR_SIZE_TOL )
+  if ( fabs((objects[OBJECT_ID_SATURN].angular_size - expected_output[9])) <= SATURN_ANGULAR_SIZE_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_SATURN].light_travel_time - expected_output[10])) <= SATURN_LIGHT_TRAVEL_TOL )
+  if ( fabs((objects[OBJECT_ID_SATURN].light_travel_time - expected_output[10])) <= SATURN_LIGHT_TRAVEL_TOL )
     results_check++;	
     
-  if ( abs((objects[OBJECT_ID_SATURN].sun_object_distance - expected_output[11])) <= SATURN_SUN_DIST_TOL )
+  if ( fabs((objects[OBJECT_ID_SATURN].sun_object_distance - expected_output[11])) <= SATURN_SUN_DIST_TOL )
     results_check++;	
 		        
-  if ( abs((objects[OBJECT_ID_SATURN].phase - expected_output[12])) <= SATURN_PHASE_TOL )
+  if ( fabs((objects[OBJECT_ID_SATURN].phase - expected_output[12])) <= SATURN_PHASE_TOL )
     results_check++;   
     		    
-  if ( abs((objects[OBJECT_ID_SATURN].magnitude - expected_output[13])) <= SATURN_MAG_TOL )
+  if ( fabs((objects[OBJECT_ID_SATURN].magnitude - expected_output[13])) <= SATURN_MAG_TOL )
     results_check++;     
 		    
-  if ( abs((objects[OBJECT_ID_SATURN].azimuth_rise - expected_output[14])) <= SATURN_AZIMUTH_RISE_TOL )
+  if ( fabs((objects[OBJECT_ID_SATURN].azimuth_rise - expected_output[14])) <= SATURN_AZIMUTH_RISE_TOL )
     results_check++;     
 		  
-  if ( abs((objects[OBJECT_ID_SATURN].azimuth_set - expected_output[15])) <= SATURN_AZIMUTH_SET_TOL )
+  if ( fabs((objects[OBJECT_ID_SATURN].azimuth_set - expected_output[15])) <= SATURN_AZIMUTH_SET_TOL )
     results_check++;    
     		  
-  if ( abs((objects[OBJECT_ID_SATURN].rise_time - expected_output[16])) <= SATURN_RISE_TIME_TOL )
+  if ( fabs((objects[OBJECT_ID_SATURN].rise_time - expected_output[16])) <= SATURN_RISE_TIME_TOL )
     results_check++;     
     		  
-  // Debug +++++
-  cout << "17 Results = " << results_check << endl;
-
-  if ( abs((objects[OBJECT_ID_SATURN].transit_time - expected_output[17])) <= SATURN_TRANSIT_TIME_TOL )
+  if ( fabs((objects[OBJECT_ID_SATURN].transit_time - expected_output[17])) <= SATURN_TRANSIT_TIME_TOL )
     results_check++;     
 
-  // Debug +++++
-  cout << "18 Results = " << results_check << endl;
-
-  if ( abs((objects[OBJECT_ID_SATURN].set_time - expected_output[18])) <= SATURN_SET_TIME_TOL )
+  if ( fabs((objects[OBJECT_ID_SATURN].set_time - expected_output[18])) <= SATURN_SET_TIME_TOL )
     results_check++;     
     			
-  // Debug +++++
-  cout << "19 Results = " << results_check << endl;
-
   // These lines are used for diagnostic reasons.
   cout << setprecision(DISPLAY_PRECISION);
   cout << "TestJunit002_007_000_0000" << endl;  
@@ -1767,61 +1786,61 @@ BOOST_AUTO_TEST_CASE( TestJunit002_008_000_0000 )
   objects = api.object_details(2447487.50000,0.0,51.5);
 						
   // Check that the answer is within the tolerance.
-  if ( abs((objects[OBJECT_ID_URANUS].actual_geo_ecliptic_lambda - expected_output[0])) <= URANUS_GEO_ECL_LAMBDA_TOL )
+  if ( fabs((objects[OBJECT_ID_URANUS].actual_geo_ecliptic_lambda - expected_output[0])) <= URANUS_GEO_ECL_LAMBDA_TOL )
     results_check++;
 
-  if ( abs((objects[OBJECT_ID_URANUS].actual_geo_ecliptic_beta - expected_output[1])) <= URANUS_GEO_ECL_BETA_TOL )
+  if ( fabs((objects[OBJECT_ID_URANUS].actual_geo_ecliptic_beta - expected_output[1])) <= URANUS_GEO_ECL_BETA_TOL )
     results_check++;
 	
-  if ( abs((objects[OBJECT_ID_URANUS].actual_helio_ecliptic_lambda - expected_output[2])) <= URANUS_HELIO_ECL_LAMBDA_TOL )
+  if ( fabs((objects[OBJECT_ID_URANUS].actual_helio_ecliptic_lambda - expected_output[2])) <= URANUS_HELIO_ECL_LAMBDA_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_URANUS].actual_helio_ecliptic_beta - expected_output[3])) <= URANUS_HELIO_ECL_BETA_TOL )
+  if ( fabs((objects[OBJECT_ID_URANUS].actual_helio_ecliptic_beta - expected_output[3])) <= URANUS_HELIO_ECL_BETA_TOL )
     results_check++;			
 		
-  if ( abs((objects[OBJECT_ID_URANUS].equ_ra - expected_output[4])) <= URANUS_EQU_RA_TOL )
+  if ( fabs((objects[OBJECT_ID_URANUS].equ_ra - expected_output[4])) <= URANUS_EQU_RA_TOL )
     results_check++;	
 		
-  if ( abs((objects[OBJECT_ID_URANUS].equ_dec - expected_output[5])) <= URANUS_EQU_DEC_TOL )
+  if ( fabs((objects[OBJECT_ID_URANUS].equ_dec - expected_output[5])) <= URANUS_EQU_DEC_TOL )
     results_check++;	
 	
-  if ( abs((objects[OBJECT_ID_URANUS].hor_altitude - expected_output[6])) <= URANUS_HOR_ALTITUDE_TOL )
+  if ( fabs((objects[OBJECT_ID_URANUS].hor_altitude - expected_output[6])) <= URANUS_HOR_ALTITUDE_TOL )
     results_check++;	
 		
-  if ( abs((objects[OBJECT_ID_URANUS].hor_azimuth - expected_output[7])) <= URANUS_HOR_AZIMUTH_TOL )
+  if ( fabs((objects[OBJECT_ID_URANUS].hor_azimuth - expected_output[7])) <= URANUS_HOR_AZIMUTH_TOL )
     results_check++;	
 		
-  if ( abs((objects[OBJECT_ID_URANUS].earth_object_distance - expected_output[8])) <= URANUS_EARTH_DIST_TOL )
+  if ( fabs((objects[OBJECT_ID_URANUS].earth_object_distance - expected_output[8])) <= URANUS_EARTH_DIST_TOL )
     results_check++;	
     		
-  if ( abs((objects[OBJECT_ID_URANUS].angular_size - expected_output[9])) <= URANUS_ANGULAR_SIZE_TOL )
+  if ( fabs((objects[OBJECT_ID_URANUS].angular_size - expected_output[9])) <= URANUS_ANGULAR_SIZE_TOL )
     results_check++;	
     		  
-  if ( abs((objects[OBJECT_ID_URANUS].light_travel_time - expected_output[10])) <= URANUS_LIGHT_TRAVEL_TOL )
+  if ( fabs((objects[OBJECT_ID_URANUS].light_travel_time - expected_output[10])) <= URANUS_LIGHT_TRAVEL_TOL )
     results_check++;	
    
-  if ( abs((objects[OBJECT_ID_URANUS].sun_object_distance - expected_output[11])) <= URANUS_SUN_DIST_TOL )
+  if ( fabs((objects[OBJECT_ID_URANUS].sun_object_distance - expected_output[11])) <= URANUS_SUN_DIST_TOL )
     results_check++;	
 		        
-  if ( abs((objects[OBJECT_ID_URANUS].phase - expected_output[12])) <= URANUS_PHASE_TOL )
+  if ( fabs((objects[OBJECT_ID_URANUS].phase - expected_output[12])) <= URANUS_PHASE_TOL )
     results_check++;   
     		    
-  if ( abs((objects[OBJECT_ID_URANUS].magnitude - expected_output[13])) <= URANUS_MAG_TOL )
+  if ( fabs((objects[OBJECT_ID_URANUS].magnitude - expected_output[13])) <= URANUS_MAG_TOL )
     results_check++;     
 		    
-  if ( abs((objects[OBJECT_ID_URANUS].azimuth_rise - expected_output[14])) <= URANUS_AZIMUTH_RISE_TOL )
+  if ( fabs((objects[OBJECT_ID_URANUS].azimuth_rise - expected_output[14])) <= URANUS_AZIMUTH_RISE_TOL )
     results_check++;     
 		  
-  if ( abs((objects[OBJECT_ID_URANUS].azimuth_set - expected_output[15])) <= URANUS_AZIMUTH_SET_TOL )
+  if ( fabs((objects[OBJECT_ID_URANUS].azimuth_set - expected_output[15])) <= URANUS_AZIMUTH_SET_TOL )
     results_check++;    
      		  
-  if ( abs((objects[OBJECT_ID_URANUS].rise_time - expected_output[16])) <= URANUS_RISE_TIME_TOL )
+  if ( fabs((objects[OBJECT_ID_URANUS].rise_time - expected_output[16])) <= URANUS_RISE_TIME_TOL )
     results_check++;     
   		  
-  if ( abs((objects[OBJECT_ID_URANUS].transit_time - expected_output[17])) <= URANUS_TRANSIT_TIME_TOL )
+  if ( fabs((objects[OBJECT_ID_URANUS].transit_time - expected_output[17])) <= URANUS_TRANSIT_TIME_TOL )
     results_check++;     
   		  
-  if ( abs((objects[OBJECT_ID_URANUS].set_time - expected_output[18])) <= URANUS_SET_TIME_TOL )
+  if ( fabs((objects[OBJECT_ID_URANUS].set_time - expected_output[18])) <= URANUS_SET_TIME_TOL )
     results_check++;     
    			
   // These lines are used for diagnostic reasons.
@@ -1909,61 +1928,61 @@ BOOST_AUTO_TEST_CASE( TestJunit002_009_000_0000 )
   objects = api.object_details(2447487.50000,0.0,51.5);
 						
   // Check that the answer is within the tolerance. 
-  if ( abs((objects[OBJECT_ID_NEPTUNE].actual_geo_ecliptic_lambda - expected_output[0])) <= NEPTUNE_GEO_ECL_LAMBDA_TOL )
+  if ( fabs((objects[OBJECT_ID_NEPTUNE].actual_geo_ecliptic_lambda - expected_output[0])) <= NEPTUNE_GEO_ECL_LAMBDA_TOL )
     results_check++;
 
-  if ( abs((objects[OBJECT_ID_NEPTUNE].actual_geo_ecliptic_beta - expected_output[1])) <= NEPTUNE_GEO_ECL_BETA_TOL )
+  if ( fabs((objects[OBJECT_ID_NEPTUNE].actual_geo_ecliptic_beta - expected_output[1])) <= NEPTUNE_GEO_ECL_BETA_TOL )
     results_check++;
 	
-  if ( abs((objects[OBJECT_ID_NEPTUNE].actual_helio_ecliptic_lambda - expected_output[2])) <= NEPTUNE_HELIO_ECL_LAMBDA_TOL )
+  if ( fabs((objects[OBJECT_ID_NEPTUNE].actual_helio_ecliptic_lambda - expected_output[2])) <= NEPTUNE_HELIO_ECL_LAMBDA_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_NEPTUNE].actual_helio_ecliptic_beta - expected_output[3])) <= NEPTUNE_HELIO_ECL_BETA_TOL )
+  if ( fabs((objects[OBJECT_ID_NEPTUNE].actual_helio_ecliptic_beta - expected_output[3])) <= NEPTUNE_HELIO_ECL_BETA_TOL )
     results_check++;			
 		
-  if ( abs((objects[OBJECT_ID_NEPTUNE].equ_ra - expected_output[4])) <= NEPTUNE_EQU_RA_TOL )
+  if ( fabs((objects[OBJECT_ID_NEPTUNE].equ_ra - expected_output[4])) <= NEPTUNE_EQU_RA_TOL )
     results_check++;	
 		
-  if ( abs((objects[OBJECT_ID_NEPTUNE].equ_dec - expected_output[5])) <= NEPTUNE_EQU_DEC_TOL )
+  if ( fabs((objects[OBJECT_ID_NEPTUNE].equ_dec - expected_output[5])) <= NEPTUNE_EQU_DEC_TOL )
     results_check++;	
 	
-  if ( abs((objects[OBJECT_ID_NEPTUNE].hor_altitude - expected_output[6])) <= NEPTUNE_HOR_ALTITUDE_TOL )
+  if ( fabs((objects[OBJECT_ID_NEPTUNE].hor_altitude - expected_output[6])) <= NEPTUNE_HOR_ALTITUDE_TOL )
     results_check++;	
 		
-  if ( abs((objects[OBJECT_ID_NEPTUNE].hor_azimuth - expected_output[7])) <= NEPTUNE_HOR_AZIMUTH_TOL )
+  if ( fabs((objects[OBJECT_ID_NEPTUNE].hor_azimuth - expected_output[7])) <= NEPTUNE_HOR_AZIMUTH_TOL )
     results_check++;	
 		
-  if ( abs((objects[OBJECT_ID_NEPTUNE].earth_object_distance - expected_output[8])) <= NEPTUNE_EARTH_DIST_TOL )
+  if ( fabs((objects[OBJECT_ID_NEPTUNE].earth_object_distance - expected_output[8])) <= NEPTUNE_EARTH_DIST_TOL )
     results_check++;	
 		
-  if ( abs((objects[OBJECT_ID_NEPTUNE].angular_size - expected_output[9])) <= NEPTUNE_ANGULAR_SIZE_TOL )
+  if ( fabs((objects[OBJECT_ID_NEPTUNE].angular_size - expected_output[9])) <= NEPTUNE_ANGULAR_SIZE_TOL )
     results_check++;	
 
-  if ( abs((objects[OBJECT_ID_NEPTUNE].light_travel_time - expected_output[10])) <= NEPTUNE_LIGHT_TRAVEL_TOL )
+  if ( fabs((objects[OBJECT_ID_NEPTUNE].light_travel_time - expected_output[10])) <= NEPTUNE_LIGHT_TRAVEL_TOL )
     results_check++;	
    
-  if ( abs((objects[OBJECT_ID_NEPTUNE].sun_object_distance - expected_output[11])) <= NEPTUNE_SUN_DIST_TOL )
+  if ( fabs((objects[OBJECT_ID_NEPTUNE].sun_object_distance - expected_output[11])) <= NEPTUNE_SUN_DIST_TOL )
     results_check++;	
 		        
-  if ( abs((objects[OBJECT_ID_NEPTUNE].phase - expected_output[12])) <= NEPTUNE_PHASE_TOL )
+  if ( fabs((objects[OBJECT_ID_NEPTUNE].phase - expected_output[12])) <= NEPTUNE_PHASE_TOL )
     results_check++;   
 
-  if ( abs((objects[OBJECT_ID_NEPTUNE].magnitude - expected_output[13])) <= NEPTUNE_MAG_TOL )
+  if ( fabs((objects[OBJECT_ID_NEPTUNE].magnitude - expected_output[13])) <= NEPTUNE_MAG_TOL )
     results_check++;     
 		    
-  if ( abs((objects[OBJECT_ID_NEPTUNE].azimuth_rise - expected_output[14])) <= NEPTUNE_AZIMUTH_RISE_TOL )
+  if ( fabs((objects[OBJECT_ID_NEPTUNE].azimuth_rise - expected_output[14])) <= NEPTUNE_AZIMUTH_RISE_TOL )
     results_check++;     
 		  
-  if ( abs((objects[OBJECT_ID_NEPTUNE].azimuth_set - expected_output[15])) <= NEPTUNE_AZIMUTH_SET_TOL )
+  if ( fabs((objects[OBJECT_ID_NEPTUNE].azimuth_set - expected_output[15])) <= NEPTUNE_AZIMUTH_SET_TOL )
     results_check++;    
      		  
-  if ( abs((objects[OBJECT_ID_NEPTUNE].rise_time - expected_output[16])) <= NEPTUNE_RISE_TIME_TOL )
+  if ( fabs((objects[OBJECT_ID_NEPTUNE].rise_time - expected_output[16])) <= NEPTUNE_RISE_TIME_TOL )
     results_check++;     
 
-  if ( abs((objects[OBJECT_ID_NEPTUNE].transit_time - expected_output[17])) <= NEPTUNE_TRANSIT_TIME_TOL )
+  if ( fabs((objects[OBJECT_ID_NEPTUNE].transit_time - expected_output[17])) <= NEPTUNE_TRANSIT_TIME_TOL )
     results_check++;     
   		  
-  if ( abs((objects[OBJECT_ID_NEPTUNE].set_time - expected_output[18])) <= NEPTUNE_SET_TIME_TOL )
+  if ( fabs((objects[OBJECT_ID_NEPTUNE].set_time - expected_output[18])) <= NEPTUNE_SET_TIME_TOL )
     results_check++;     
 
   // These lines are used for diagnostic reasons.
@@ -2083,62 +2102,61 @@ BOOST_AUTO_TEST_CASE( TestJunit002_011_000_0001 )
                                       5.36);
 
   // Check that the answer is within the tolerance.
-  if ( abs((object.actual_geo_ecliptic_lambda - expected_output[0])) <= COMET_PERIODIC_GEO_ECL_LAMBDA_TOL )
+  if ( fabs((object.actual_geo_ecliptic_lambda - expected_output[0])) <= COMET_PERIODIC_GEO_ECL_LAMBDA_TOL )
     results_check++;
 
-  if ( abs((object.actual_geo_ecliptic_beta - expected_output[1])) <= COMET_PERIODIC_GEO_ECL_BETA_TOL )
+  if ( fabs((object.actual_geo_ecliptic_beta - expected_output[1])) <= COMET_PERIODIC_GEO_ECL_BETA_TOL )
     results_check++;
 
-  if ( abs((object.actual_helio_ecliptic_lambda - expected_output[2])) <= COMET_PERIODIC_HELIO_ECL_LAMBDA_TOL )
+  if ( fabs((object.actual_helio_ecliptic_lambda - expected_output[2])) <= COMET_PERIODIC_HELIO_ECL_LAMBDA_TOL )
     results_check++;
 
-  if ( abs((object.actual_helio_ecliptic_beta - expected_output[3])) <= COMET_PERIODIC_HELIO_ECL_BETA_TOL )
+  if ( fabs((object.actual_helio_ecliptic_beta - expected_output[3])) <= COMET_PERIODIC_HELIO_ECL_BETA_TOL )
     results_check++;
 
-  if ( abs((object.equ_ra - expected_output[4])) <= COMET_PERIODIC_EQU_RA_TOL )
+  if ( fabs((object.equ_ra - expected_output[4])) <= COMET_PERIODIC_EQU_RA_TOL )
     results_check++;
 
-  if ( abs((object.equ_dec - expected_output[5])) <= COMET_PERIODIC_EQU_DEC_TOL )
+  if ( fabs((object.equ_dec - expected_output[5])) <= COMET_PERIODIC_EQU_DEC_TOL )
     results_check++;
 
-  if ( abs((object.hor_altitude - expected_output[6])) <= COMET_PERIODIC_HOR_ALTITUDE_TOL )
+  if ( fabs((object.hor_altitude - expected_output[6])) <= COMET_PERIODIC_HOR_ALTITUDE_TOL )
     results_check++;
 
-  if ( abs((object.hor_azimuth - expected_output[7])) <= COMET_PERIODIC_HOR_AZIMUTH_TOL )
+  if ( fabs((object.hor_azimuth - expected_output[7])) <= COMET_PERIODIC_HOR_AZIMUTH_TOL )
     results_check++;
 
-  if ( abs((object.earth_object_distance - expected_output[8])) <= COMET_PERIODIC_EARTH_DIST_TOL )
+  if ( fabs((object.earth_object_distance - expected_output[8])) <= COMET_PERIODIC_EARTH_DIST_TOL )
     results_check++;
 
-  //if ( abs((object.angular_size - expected_output[9])) <= COMET_PERIODIC_ANGULAR_SIZE_TOL )
   if(isnan(object.angular_size))
     results_check++;
 
-  if ( abs((object.light_travel_time - expected_output[10])) <= COMET_PERIODIC_LIGHT_TRAVEL_TOL )
+  if ( fabs((object.light_travel_time - expected_output[10])) <= COMET_PERIODIC_LIGHT_TRAVEL_TOL )
     results_check++;
 
-  if ( abs((object.sun_object_distance - expected_output[11])) <= COMET_PERIODIC_SUN_DIST_TOL )
+  if ( fabs((object.sun_object_distance - expected_output[11])) <= COMET_PERIODIC_SUN_DIST_TOL )
     results_check++;
 
-  if ( abs((object.phase - expected_output[12])) <= COMET_PERIODIC_PHASE_TOL )
+  if ( fabs((object.phase - expected_output[12])) <= COMET_PERIODIC_PHASE_TOL )
     results_check++;
 
-  if ( abs((object.magnitude - expected_output[13])) <= COMET_PERIODIC_MAG_TOL )
+  if ( fabs((object.magnitude - expected_output[13])) <= COMET_PERIODIC_MAG_TOL )
     results_check++;
 
-  if ( abs((object.azimuth_rise - expected_output[14])) <= COMET_PERIODIC_AZIMUTH_RISE_TOL )
+  if ( fabs((object.azimuth_rise - expected_output[14])) <= COMET_PERIODIC_AZIMUTH_RISE_TOL )
     results_check++;
 
-  if ( abs((object.azimuth_set - expected_output[15])) <= COMET_PERIODIC_AZIMUTH_SET_TOL )
+  if ( fabs((object.azimuth_set - expected_output[15])) <= COMET_PERIODIC_AZIMUTH_SET_TOL )
     results_check++;
 
-  if ( abs((object.rise_time - expected_output[16])) <= COMET_PERIODIC_RISE_TIME_TOL )
+  if ( fabs((object.rise_time - expected_output[16])) <= COMET_PERIODIC_RISE_TIME_TOL )
     results_check++;
 
-  if ( abs((object.transit_time - expected_output[17])) <= COMET_PERIODIC_TRANSIT_TIME_TOL )
+  if ( fabs((object.transit_time - expected_output[17])) <= COMET_PERIODIC_TRANSIT_TIME_TOL )
     results_check++;
 
-  if ( abs((object.set_time - expected_output[18])) <= COMET_PERIODIC_SET_TIME_TOL )
+  if ( fabs((object.set_time - expected_output[18])) <= COMET_PERIODIC_SET_TIME_TOL )
     results_check++;
 
   // These lines are used for diagnostic reasons.
@@ -2252,62 +2270,61 @@ BOOST_AUTO_TEST_CASE( TestJunit002_011_000_0002 )
                                       5.36);
 
   // Check that the answer is within the tolerance.
-  if ( abs((object.actual_geo_ecliptic_lambda - expected_output[0])) <= COMET_PERIODIC_GEO_ECL_LAMBDA_TOL )
+  if ( fabs((object.actual_geo_ecliptic_lambda - expected_output[0])) <= COMET_PERIODIC_GEO_ECL_LAMBDA_TOL )
     results_check++;
 
-  if ( abs((object.actual_geo_ecliptic_beta - expected_output[1])) <= COMET_PERIODIC_GEO_ECL_BETA_TOL )
+  if ( fabs((object.actual_geo_ecliptic_beta - expected_output[1])) <= COMET_PERIODIC_GEO_ECL_BETA_TOL )
     results_check++;
 
-  if ( abs((object.actual_helio_ecliptic_lambda - expected_output[2])) <= COMET_PERIODIC_HELIO_ECL_LAMBDA_TOL )
+  if ( fabs((object.actual_helio_ecliptic_lambda - expected_output[2])) <= COMET_PERIODIC_HELIO_ECL_LAMBDA_TOL )
     results_check++;
 
-  if ( abs((object.actual_helio_ecliptic_beta - expected_output[3])) <= COMET_PERIODIC_HELIO_ECL_BETA_TOL )
+  if ( fabs((object.actual_helio_ecliptic_beta - expected_output[3])) <= COMET_PERIODIC_HELIO_ECL_BETA_TOL )
     results_check++;
 
-  if ( abs((object.equ_ra - expected_output[4])) <= COMET_PERIODIC_EQU_RA_TOL )
+  if ( fabs((object.equ_ra - expected_output[4])) <= COMET_PERIODIC_EQU_RA_TOL )
     results_check++;
 
-  if ( abs((object.equ_dec - expected_output[5])) <= COMET_PERIODIC_EQU_DEC_TOL )
+  if ( fabs((object.equ_dec - expected_output[5])) <= COMET_PERIODIC_EQU_DEC_TOL )
     results_check++;
 
-  if ( abs((object.hor_altitude - expected_output[6])) <= COMET_PERIODIC_HOR_ALTITUDE_TOL )
+  if ( fabs((object.hor_altitude - expected_output[6])) <= COMET_PERIODIC_HOR_ALTITUDE_TOL )
     results_check++;
 
-  if ( abs((object.hor_azimuth - expected_output[7])) <= COMET_PERIODIC_HOR_AZIMUTH_TOL )
+  if ( fabs((object.hor_azimuth - expected_output[7])) <= COMET_PERIODIC_HOR_AZIMUTH_TOL )
     results_check++;
 
-  if ( abs((object.earth_object_distance - expected_output[8])) <= COMET_PERIODIC_EARTH_DIST_TOL )
+  if ( fabs((object.earth_object_distance - expected_output[8])) <= COMET_PERIODIC_EARTH_DIST_TOL )
     results_check++;
 
-  //if ( abs((object.angular_size - expected_output[9])) <= COMET_PERIODIC_ANGULAR_SIZE_TOL )
   if(isnan(object.angular_size))
     results_check++;
 
-  if ( abs((object.light_travel_time - expected_output[10])) <= COMET_PERIODIC_LIGHT_TRAVEL_TOL )
+  if ( fabs((object.light_travel_time - expected_output[10])) <= COMET_PERIODIC_LIGHT_TRAVEL_TOL )
     results_check++;
 
-  if ( abs((object.sun_object_distance - expected_output[11])) <= COMET_PERIODIC_SUN_DIST_TOL )
+  if ( fabs((object.sun_object_distance - expected_output[11])) <= COMET_PERIODIC_SUN_DIST_TOL )
     results_check++;
 
-  if ( abs((object.phase - expected_output[12])) <= COMET_PERIODIC_PHASE_TOL )
+  if ( fabs((object.phase - expected_output[12])) <= COMET_PERIODIC_PHASE_TOL )
     results_check++;
 
-  if ( abs((object.magnitude - expected_output[13])) <= COMET_PERIODIC_MAG_TOL )
+  if ( fabs((object.magnitude - expected_output[13])) <= COMET_PERIODIC_MAG_TOL )
     results_check++;
 
-  if ( abs((object.azimuth_rise - expected_output[14])) <= COMET_PERIODIC_AZIMUTH_RISE_TOL )
+  if ( fabs((object.azimuth_rise - expected_output[14])) <= COMET_PERIODIC_AZIMUTH_RISE_TOL )
     results_check++;
 
-  if ( abs((object.azimuth_set - expected_output[15])) <= COMET_PERIODIC_AZIMUTH_SET_TOL )
+  if ( fabs((object.azimuth_set - expected_output[15])) <= COMET_PERIODIC_AZIMUTH_SET_TOL )
     results_check++;
 
-  if ( abs((object.rise_time - expected_output[16])) <= COMET_PERIODIC_RISE_TIME_TOL )
+  if ( fabs((object.rise_time - expected_output[16])) <= COMET_PERIODIC_RISE_TIME_TOL )
     results_check++;
 
-  if ( abs((object.transit_time - expected_output[17])) <= COMET_PERIODIC_TRANSIT_TIME_TOL )
+  if ( fabs((object.transit_time - expected_output[17])) <= COMET_PERIODIC_TRANSIT_TIME_TOL )
     results_check++;
 
-  if ( abs((object.set_time - expected_output[18])) <= COMET_PERIODIC_SET_TIME_TOL )
+  if ( fabs((object.set_time - expected_output[18])) <= COMET_PERIODIC_SET_TIME_TOL )
     results_check++;
 
   // These lines are used for diagnostic reasons.
@@ -2415,62 +2432,61 @@ BOOST_AUTO_TEST_CASE( TestJunit002_012_000_0001 )
                                         2.48);
 
   // Check that the answer is within the tolerance.
-  if ( abs((object.actual_geo_ecliptic_lambda - expected_output[0])) <= COMET_PARABOLIC_GEO_ECL_LAMBDA_TOL )
+  if ( fabs((object.actual_geo_ecliptic_lambda - expected_output[0])) <= COMET_PARABOLIC_GEO_ECL_LAMBDA_TOL )
     results_check++;
 
-  if ( abs((object.actual_geo_ecliptic_beta - expected_output[1])) <= COMET_PARABOLIC_GEO_ECL_BETA_TOL )
+  if ( fabs((object.actual_geo_ecliptic_beta - expected_output[1])) <= COMET_PARABOLIC_GEO_ECL_BETA_TOL )
     results_check++;
 
-  if ( abs((object.actual_helio_ecliptic_lambda - expected_output[2])) <= COMET_PARABOLIC_HELIO_ECL_LAMBDA_TOL )
+  if ( fabs((object.actual_helio_ecliptic_lambda - expected_output[2])) <= COMET_PARABOLIC_HELIO_ECL_LAMBDA_TOL )
     results_check++;
 
-  if ( abs((object.actual_helio_ecliptic_beta - expected_output[3])) <= COMET_PARABOLIC_HELIO_ECL_BETA_TOL )
+  if ( fabs((object.actual_helio_ecliptic_beta - expected_output[3])) <= COMET_PARABOLIC_HELIO_ECL_BETA_TOL )
     results_check++;
 
-  if ( abs((object.equ_ra - expected_output[4])) <= COMET_PARABOLIC_EQU_RA_TOL )
+  if ( fabs((object.equ_ra - expected_output[4])) <= COMET_PARABOLIC_EQU_RA_TOL )
     results_check++;
 
-  if ( abs((object.equ_dec - expected_output[5])) <= COMET_PARABOLIC_EQU_DEC_TOL )
+  if ( fabs((object.equ_dec - expected_output[5])) <= COMET_PARABOLIC_EQU_DEC_TOL )
     results_check++;
 
-  if ( abs((object.hor_altitude - expected_output[6])) <= COMET_PARABOLIC_HOR_ALTITUDE_TOL )
+  if ( fabs((object.hor_altitude - expected_output[6])) <= COMET_PARABOLIC_HOR_ALTITUDE_TOL )
     results_check++;
 
-  if ( abs((object.hor_azimuth - expected_output[7])) <= COMET_PARABOLIC_HOR_AZIMUTH_TOL )
+  if ( fabs((object.hor_azimuth - expected_output[7])) <= COMET_PARABOLIC_HOR_AZIMUTH_TOL )
     results_check++;
 
-  if ( abs((object.earth_object_distance - expected_output[8])) <= COMET_PARABOLIC_EARTH_DIST_TOL )
+  if ( fabs((object.earth_object_distance - expected_output[8])) <= COMET_PARABOLIC_EARTH_DIST_TOL )
     results_check++;
 
-  //if ( abs((object.angular_size - expected_output[9])) <= COMET_PARABOLIC_ANGULAR_SIZE_TOL )
   if(isnan(object.angular_size))
     results_check++;
 
-  if ( abs((object.light_travel_time - expected_output[10])) <= COMET_PARABOLIC_LIGHT_TRAVEL_TOL )
+  if ( fabs((object.light_travel_time - expected_output[10])) <= COMET_PARABOLIC_LIGHT_TRAVEL_TOL )
     results_check++;
 
-  if ( abs((object.sun_object_distance - expected_output[11])) <= COMET_PARABOLIC_SUN_DIST_TOL )
+  if ( fabs((object.sun_object_distance - expected_output[11])) <= COMET_PARABOLIC_SUN_DIST_TOL )
     results_check++;
 
-  if ( abs((object.phase - expected_output[12])) <= COMET_PARABOLIC_PHASE_TOL )
+  if ( fabs((object.phase - expected_output[12])) <= COMET_PARABOLIC_PHASE_TOL )
     results_check++;
 
-  if ( abs((object.magnitude - expected_output[13])) <= COMET_PARABOLIC_MAG_TOL )
+  if ( fabs((object.magnitude - expected_output[13])) <= COMET_PARABOLIC_MAG_TOL )
     results_check++;
 
-  if ( abs((object.azimuth_rise - expected_output[14])) <= COMET_PARABOLIC_AZIMUTH_RISE_TOL )
+  if ( fabs((object.azimuth_rise - expected_output[14])) <= COMET_PARABOLIC_AZIMUTH_RISE_TOL )
     results_check++;
 
-  if ( abs((object.azimuth_set - expected_output[15])) <= COMET_PARABOLIC_AZIMUTH_SET_TOL )
+  if ( fabs((object.azimuth_set - expected_output[15])) <= COMET_PARABOLIC_AZIMUTH_SET_TOL )
     results_check++;
 
-  if ( abs((object.rise_time - expected_output[16])) <= COMET_PARABOLIC_RISE_TIME_TOL )
+  if ( fabs((object.rise_time - expected_output[16])) <= COMET_PARABOLIC_RISE_TIME_TOL )
     results_check++;
 
-  if ( abs((object.transit_time - expected_output[17])) <= COMET_PARABOLIC_TRANSIT_TIME_TOL )
+  if ( fabs((object.transit_time - expected_output[17])) <= COMET_PARABOLIC_TRANSIT_TIME_TOL )
     results_check++;
 
-  if ( abs((object.set_time - expected_output[18])) <= COMET_PARABOLIC_SET_TIME_TOL )
+  if ( fabs((object.set_time - expected_output[18])) <= COMET_PARABOLIC_SET_TIME_TOL )
     results_check++;
 
   // These lines are used for diagnostic reasons.
@@ -2571,62 +2587,61 @@ BOOST_AUTO_TEST_CASE( TestJunit002_012_000_0002 )
                                         2.48);
 
   // Check that the answer is within the tolerance.
-  if ( abs((object.actual_geo_ecliptic_lambda - expected_output[0])) <= COMET_PARABOLIC_GEO_ECL_LAMBDA_TOL )
+  if ( fabs((object.actual_geo_ecliptic_lambda - expected_output[0])) <= COMET_PARABOLIC_GEO_ECL_LAMBDA_TOL )
     results_check++;
 
-  if ( abs((object.actual_geo_ecliptic_beta - expected_output[1])) <= COMET_PARABOLIC_GEO_ECL_BETA_TOL )
+  if ( fabs((object.actual_geo_ecliptic_beta - expected_output[1])) <= COMET_PARABOLIC_GEO_ECL_BETA_TOL )
     results_check++;
 
-  if ( abs((object.actual_helio_ecliptic_lambda - expected_output[2])) <= COMET_PARABOLIC_HELIO_ECL_LAMBDA_TOL )
+  if ( fabs((object.actual_helio_ecliptic_lambda - expected_output[2])) <= COMET_PARABOLIC_HELIO_ECL_LAMBDA_TOL )
     results_check++;
 
-  if ( abs((object.actual_helio_ecliptic_beta - expected_output[3])) <= COMET_PARABOLIC_HELIO_ECL_BETA_TOL )
+  if ( fabs((object.actual_helio_ecliptic_beta - expected_output[3])) <= COMET_PARABOLIC_HELIO_ECL_BETA_TOL )
     results_check++;
 
-  if ( abs((object.equ_ra - expected_output[4])) <= COMET_PARABOLIC_EQU_RA_TOL )
+  if ( fabs((object.equ_ra - expected_output[4])) <= COMET_PARABOLIC_EQU_RA_TOL )
     results_check++;
 
-  if ( abs((object.equ_dec - expected_output[5])) <= COMET_PARABOLIC_EQU_DEC_TOL )
+  if ( fabs((object.equ_dec - expected_output[5])) <= COMET_PARABOLIC_EQU_DEC_TOL )
     results_check++;
 
-  if ( abs((object.hor_altitude - expected_output[6])) <= COMET_PARABOLIC_HOR_ALTITUDE_TOL )
+  if ( fabs((object.hor_altitude - expected_output[6])) <= COMET_PARABOLIC_HOR_ALTITUDE_TOL )
     results_check++;
 
-  if ( abs((object.hor_azimuth - expected_output[7])) <= COMET_PARABOLIC_HOR_AZIMUTH_TOL )
+  if ( fabs((object.hor_azimuth - expected_output[7])) <= COMET_PARABOLIC_HOR_AZIMUTH_TOL )
     results_check++;
 
-  if ( abs((object.earth_object_distance - expected_output[8])) <= COMET_PARABOLIC_EARTH_DIST_TOL )
+  if ( fabs((object.earth_object_distance - expected_output[8])) <= COMET_PARABOLIC_EARTH_DIST_TOL )
     results_check++;
 
-  //if ( abs((object.angular_size - expected_output[9])) <= COMET_PARABOLIC_ANGULAR_SIZE_TOL )
   if(isnan(object.angular_size))
     results_check++;
 
-  if ( abs((object.light_travel_time - expected_output[10])) <= COMET_PARABOLIC_LIGHT_TRAVEL_TOL )
+  if ( fabs((object.light_travel_time - expected_output[10])) <= COMET_PARABOLIC_LIGHT_TRAVEL_TOL )
     results_check++;
 
-  if ( abs((object.sun_object_distance - expected_output[11])) <= COMET_PARABOLIC_SUN_DIST_TOL )
+  if ( fabs((object.sun_object_distance - expected_output[11])) <= COMET_PARABOLIC_SUN_DIST_TOL )
     results_check++;
 
-  if ( abs((object.phase - expected_output[12])) <= COMET_PARABOLIC_PHASE_TOL )
+  if ( fabs((object.phase - expected_output[12])) <= COMET_PARABOLIC_PHASE_TOL )
     results_check++;
 
-  if ( abs((object.magnitude - expected_output[13])) <= COMET_PARABOLIC_MAG_TOL )
+  if ( fabs((object.magnitude - expected_output[13])) <= COMET_PARABOLIC_MAG_TOL )
     results_check++;
 
-  if ( abs((object.azimuth_rise - expected_output[14])) <= COMET_PARABOLIC_AZIMUTH_RISE_TOL )
+  if ( fabs((object.azimuth_rise - expected_output[14])) <= COMET_PARABOLIC_AZIMUTH_RISE_TOL )
     results_check++;
 
-  if ( abs((object.azimuth_set - expected_output[15])) <= COMET_PARABOLIC_AZIMUTH_SET_TOL )
+  if ( fabs((object.azimuth_set - expected_output[15])) <= COMET_PARABOLIC_AZIMUTH_SET_TOL )
     results_check++;
 
-  if ( abs((object.rise_time - expected_output[16])) <= COMET_PARABOLIC_RISE_TIME_TOL )
+  if ( fabs((object.rise_time - expected_output[16])) <= COMET_PARABOLIC_RISE_TIME_TOL )
     results_check++;
 
-  if ( abs((object.transit_time - expected_output[17])) <= COMET_PARABOLIC_TRANSIT_TIME_TOL )
+  if ( fabs((object.transit_time - expected_output[17])) <= COMET_PARABOLIC_TRANSIT_TIME_TOL )
     results_check++;
 
-  if ( abs((object.set_time - expected_output[18])) <= COMET_PARABOLIC_SET_TIME_TOL )
+  if ( fabs((object.set_time - expected_output[18])) <= COMET_PARABOLIC_SET_TIME_TOL )
     results_check++;
 
   cout << setprecision(DISPLAY_PRECISION);
@@ -2694,10 +2709,10 @@ BOOST_AUTO_TEST_CASE( TestJunit004_000_000_0000 )
   output = api.double_star(1980, 1, 1, 0, 0, 0.0, 0.0, 41.623, 1934.008, 0.907, 0.2763, 59.025, 219.907, 23.717);
 						
   // Check that the answer is within the tolerance.
-  if ( abs((output[0] - expected_output[0])) <= BINARY_STAR_ANGLE_TOL )
+  if ( fabs((output[0] - expected_output[0])) <= BINARY_STAR_ANGLE_TOL )
     results_check++;
 							
-  if ( abs((output[1] - expected_output[1])) <= BINARY_STAR_SEP_TOL )
+  if ( fabs((output[1] - expected_output[1])) <= BINARY_STAR_SEP_TOL )
     results_check++;
 				
   // These lines are used for diagnostic reasons.
@@ -2742,19 +2757,19 @@ BOOST_AUTO_TEST_CASE( TestJunit004_001_000_0000 )
   output = api.star_rise_set(2444475.50000,64.0,30.0,&equ_co_ords[0]);
 						
   // Check that the answer is within the tolerance.
-  if ( abs((output[0] - expected_output[0])) <= STAR_RISE_AZIMUTH_TOL )
+  if ( fabs((output[0] - expected_output[0])) <= STAR_RISE_AZIMUTH_TOL )
     results_check++;
 							
-  if ( abs((output[1] - expected_output[1])) <= STAR_SET_AZIMUTH_TOL )
+  if ( fabs((output[1] - expected_output[1])) <= STAR_SET_AZIMUTH_TOL )
     results_check++;
 
-  if ( abs((output[2] - expected_output[2])) <= STAR_RISE_TIME_TOL )
+  if ( fabs((output[2] - expected_output[2])) <= STAR_RISE_TIME_TOL )
     results_check++;
 
-  if ( abs((output[3] - expected_output[3])) <= STAR_SET_TIME_TOL )
+  if ( fabs((output[3] - expected_output[3])) <= STAR_SET_TIME_TOL )
     results_check++;
     
-  if ( abs((output[4] - expected_output[4])) <= STAR_SET_TIME_TOL )
+  if ( fabs((output[4] - expected_output[4])) <= STAR_SET_TIME_TOL )
     results_check++;
 				
   // These lines are used for diagnostic reasons.
@@ -2804,13 +2819,6 @@ BOOST_AUTO_TEST_CASE( TestJunit004_001_000_0001 )
   // Work out the rise ans set details for Polaris at 30N 0.0W on the 24th Aug 1980.		 
   output = api.star_rise_set(2444475.50000,0.0,30.0,&equ_co_ords[0]);
 						
-  // Check that the answer is within the tolerance.
-//  if ( abs((output[0] - expected_output[0])) <= STAR_RISE_AZIMUTH_TOL )
-//    results_check++;
-//							
-//  if ( abs((output[1] - expected_output[1])) <= STAR_SET_AZIMUTH_TOL )
-//    results_check++;
-
   // A star that is circumpolar, then is never rises or sets.
   // The rest of the output from the star_rise_set function, in this case, is invalid.
   if (isnan(output[2]))
@@ -2818,10 +2826,7 @@ BOOST_AUTO_TEST_CASE( TestJunit004_001_000_0001 )
 
   if (isnan(output[3]))
     results_check++;
-    
-//  if ( abs((output[4] - expected_output[4])) <= STAR_SET_TIME_TOL )
-//    results_check++;
-				
+    				
   // These lines are used for diagnostic reasons.
   cout << "TestJunit004_001_000_0001" << endl;  
   cout << "Expected azimuth rise     = " << setprecision(DISPLAY_PRECISION) << expected_output[0] << endl;

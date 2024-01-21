@@ -391,6 +391,8 @@ double *co_ord_conversion::ecl_to_equ(double *ecl,double julian_date)
 
 // Convert helio ecliptic co-ords to geo ecliptic
 // To convert the helio centric co-ords to geocentric (and visa-versa).
+// The algorithum is from:
+//	http://sce.uhcl.edu/helm/SpaceNavHandbook/Chapter5.pdf p3
 //
 // To convert helio centric ecliptic co-ords to geo ecliptic co-ords
 // The parameters are the helio centric co-ord of the object (with distance from the Sun) and the 
