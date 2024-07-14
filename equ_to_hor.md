@@ -8,16 +8,14 @@ This method converts equatorial co_ordinates to horizon co-ordinates.
 
 The function prototype of this function is:
   
-  double *equ_to_hor(double julian_date,double ra,double dec,double latitude,double longitude);
+  double *equ_to_hor(double hour_angle,double dec,double latitude);
  
 ### The parameters:
 The function of the parameters is:
 
-	julian_date = The date and time of the observer (Julian days).
-	ra          = The RA of the object (decimal hours).
-	dec         = The DEC of the object (decimal degrees).
-	latitude    = The latitude of the observer (degrees).
-    longitude   = The longitude of the observer (degrees)
+	hour_angle = The RA as an hour angle (degrees).
+	dec        = The DEC of the object.
+	latitude   = The latitude of the observer (degrees).
 	
 ### The output: 
 The output is a pointer to an array of two doubles.  

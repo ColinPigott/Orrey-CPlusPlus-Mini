@@ -15,11 +15,11 @@ The function of the parameters is:
 
 	julian_date	The date and time of the observer as a Julian date.
 	longitude	Longitude of the observer (degrees).
-			- West is negative, i.e. 64 W is -64.
-			- East is positive, i.e. 64 E is 64
+				  - West is negative, i.e. 64 W is -64.
+				  - East is positive, i.e. 64 E is 64
 	latitude	The latitude of the observer (degrees).
-			- North is positive, i.e. 51 N is 51.
-			- South is negative, i.e. 51 S is -51.	
+				  - North is positive, i.e. 51 N is 51.
+				  - South is negative, i.e. 51 S is -51.	
 	
 ### The output: 
 The output is a pointer to an array of ten astronomical_object structures that hold the details of the object.  
@@ -53,7 +53,7 @@ The definition of the astronomical_object structure is:
 The above structure is defined in astronomy_object.h.  
 The purpose of the fields is:
 
-| Field | Purpose | Units |
+| <div style="width:200px">Field</div> | Purpose | Units |
 | :---- | :------ | :---: |
 | actual_geo_ecliptic_lambda | Actual Geo ecliptic co-ordinate - lambda | degrees |
 | actual_geo_ecliptic_beta | Actual Geo ecliptic co-ordinate - beta | degrees |
@@ -79,7 +79,7 @@ The purpose of the fields is:
 
 The object in each element of the output array is:
 
-| Element | Value held |
+| <div style="width:200px">Element</div> | Value held |
 | :-------: | :---------- |
 | 0 | Sun |
 | 1 | Moon |

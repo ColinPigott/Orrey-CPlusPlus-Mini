@@ -26,7 +26,7 @@ The function prototype of this function is:
 ### The parameters:  
 The function of the parameters is:
 
-| Parameter | Purpose |
+| <div style="width:200px">Parameter</div> | Purpose |
 | --------- | ------- |
 | year | The year of the user. |
 | month	| The month of the user. |
@@ -47,7 +47,7 @@ The function of the parameters is:
 The output is a pointer to an array of two doubles.   
 The value of each element in the array is:
 
-| Element | Value held |
+| <div style="width:200px">Element</div> | Value held |
 | :-------: | :---------- |
 |    0 | Angle from north (degrees). |
 |    1  | Distance from the central star (arc seconds). | 

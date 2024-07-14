@@ -15,8 +15,8 @@ The function of the parameters is:
 
 	julian_date		- The date and time of the observer as a Julian date.
 	longitude		- Longitude of the observer (degrees).
-				  - West is negative, i.e. 64 W is -64.
-				  - East is positive, i.e. 64 E is 64
+				  		- West is negative, i.e. 64 W is -64.
+				  		- East is positive, i.e. 64 E is 64
 
 ### The output: 
 
